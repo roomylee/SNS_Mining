@@ -13,3 +13,4 @@ qry.execute("select * from twitter")
 print(qry.fetchall())
 qry.close()
 db.close()
+
