@@ -35,7 +35,7 @@ if __name__ == '__main__':
         qry.execute("SELECT MAX(Date) FROM twitter WHERE Twitter_ID = %s" % id)
         recent_date = qry.fetchall()[0][0]
 
-        # tweepy.Cursor를 통해서 타임라인 게시글 탐색
+        # tweepy.Cursor를 통해서 타임라인 게시글 탐색   
         for post in tweepy.Cursor(api.user_timeline, user_id=id).items():
             # API user_timeline() attribute 설명
             # screen_name : 닉네임
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
             # INSERT Query 생성
             insert_qry = "INSERT INTO twitter VALUES('%s', '%s', '%s', '%s', '%s', %d, %d)" \
-                         % (id, nickname, date, url, content, favorite, retweet)
+                        % (id, nickname, date, url, content, favorite, retweet)
             # DB에 없는 최신 게시글만 INSERT
             if recent_date != None and recent_date >= date:
                 break
@@ -65,7 +65,7 @@ if __name__ == '__main__':
             except:
                 conn.rollback()
 
-        print("Complete Crawling %s's twitter!" % row['Name'])
+            print("Complete Crawling %s's twitter!" % row['Name'])
 
 qry.close()
 conn.close()
