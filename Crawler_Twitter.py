@@ -25,7 +25,7 @@ if __name__ == '__main__':
     # 타켓 정치인 목록 가져오기
     qry.execute("SELECT * FROM politician")
     politician = qry.fetchall()
-    user_list = pd.DataFrame(data=politician, columns=['Name', 'Twitter_ID'])
+    user_list = pd.DataFrame(data=politician, columns=['Name', 'Twitter_ID', 'Inclination'])
 
     for index, row in user_list.iterrows():
         id = row['Twitter_ID']
