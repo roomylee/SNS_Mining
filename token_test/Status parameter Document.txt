@@ -1,0 +1,35 @@
+Status는
+	id(int): 게시글의 id -> twitter.com/User_ID/status/id
+	author(User()): 작성자
+	user(User()): 작성자 -> User()
+	created_at(datetime()): 게시글 작성 시간
+	_json: json파일 형식
+	retweet_count: 게시글이 리트윗 된 횟수
+	favorite_count: 게시글의 좋아요 횟수
+로 이루어져 있다.
+
+**게시글 URL
+	twitter.com/User_ID/status/id
+**답글의 원본 URL
+	twitter.com/in_reply_to_screen_name/status/in_reply_to_status_id
+**리트윗의 원본 URL
+	twitter.com/retweeted_status.user.screen_name/status/retweeted_status.id
+
+**답글 여부를 알아내는 방법
+	in_reply_to_user_id(int):
+		답글이 아닐 경우, None
+		답글일 경우, 원본의 user id
+	in_reply_to_status_id(int):
+		답글이 아닐 경우, None
+		답글일 경우, 원본의 status(게시글) id
+	in_reply_to_screen_name(string):
+		답글이 아닐 경우, None
+		답글일 경우, 원본의 작성자 닉네임
+
+**리트윗 여부를 알아내는 방법
+	if hasattr(tweet, 'retweeted_status'):
+		참일 경우, 리트윗
+		거짓을 경우, 리트윗 아님
+	참일 경우,
+	retweeted_status(Status()): 리트윗 된 원본의 Status()
+	을 분석해보면 원본의 정보를 얻을 수 있다.

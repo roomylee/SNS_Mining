@@ -1,0 +1,11 @@
+User
+	id: User의 ID code(int)
+	name: User의 이름
+	screen_name: User의 닉네임(ID), @~~~라고 쓴 것
+	created_at: User의 계정 생성 시간
+	favourites_count: User의 "마음에 들어요" 횟수, User가 좋아요 누른 게시글 개수
+	followers_count: User의 followers의 수
+	friends_count: following한 사람들의 수
+	_json: json파일 형식
+	statuses_count: 트윗(과 답글) 수
+로 이루어져 있다.

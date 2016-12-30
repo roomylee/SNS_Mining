@@ -65,7 +65,7 @@ if __name__ == '__main__':
             except:
                 conn.rollback()
 
-            print("Complete Crawling %s's twitter!" % row['Name'])
+        print("Complete Crawling %s's twitter!" % row['Name'])
 
 qry.close()
 conn.close()
