@@ -11,17 +11,18 @@ Twitter = 3
 
 if __name__ == '__main__':
 
+    # connect MySQL
     config = {'user':***REMOVED***,
             'password':***REMOVED***,
             'database':***REMOVED***}
     conn = msc.connect(**config)
     qry = conn.cursor(buffered=True)
 
-    
-    qry.execute("SELECT * FROM twitter")
+    # twitter DB에 대해 최빈단어 분석 
+    qry.execute("SELECT * FROM twitter_tweet")
     result_qry  = qry.fetchall()
     twitter_df = pd.DataFrame(data=result_qry, 
-            columns=['Twitter_ID', 'Nick_Name', 'Date', 'URL', 'Contents', 'Favorite', 'Retweet'])
+            columns=['Twitter_ID', 'Screen_Name', 'Date', 'URL', 'Contents', 'Favorite', 'Retweet'])
     
     nlp = NLP_Engine()
     word_freq = {}

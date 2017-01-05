@@ -13,7 +13,7 @@ Status는
 **답글의 원본 URL
 	twitter.com/in_reply_to_screen_name/status/in_reply_to_status_id
 **리트윗의 원본 URL
-	twitter.com/retweeted_status.user.screen_name/status/retweeted_status.id
+	twitter.com/retweeted_status.author.screen_name/status/retweeted_status.id
 
 **답글 여부를 알아내는 방법
 	in_reply_to_user_id(int):
