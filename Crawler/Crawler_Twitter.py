@@ -25,7 +25,7 @@ qry = conn.cursor(buffered=True)
 
 # 매개변수 id를 user_id로 갖는 인물의
 # Tweet을 수집하여 twitter_tweet DB에 저장
-def collect_tweet(id):
+def collect_tweet(id, inclination):
     # tweepy.Cursor를 통해서 타임라인 게시글 탐색
     cursor = tweepy.Cursor(api.user_timeline, user_id=id).items()
 
@@ -50,13 +50,14 @@ def collect_tweet(id):
             content = content.replace("'","\\\'")
 
             # INSERT Query 생성
-            insert_qry = "INSERT IGNORE INTO twitter_tweet VALUES('%s', '%s', '%s', '%s', '%s', %d, %d)" \
-                        % (id, screen_name, date, url, content, favorite, retweet)
+            insert_qry = "INSERT IGNORE INTO twitter_tweet VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d)" \
+                        % (id, screen_name, inclination, date, url, content, favorite, retweet)
 
             # INSERT Query 실행
             qry.execute(insert_qry)
             conn.commit()
 
+        # Tweepy API Interval
         except tweepy.TweepError:
             print("Waits...")
             time.sleep(60 * 15 + 1)
@@ -74,7 +75,7 @@ def collect_tweet(id):
 # 매개변수의 query는 검색하고자 하는 유저의 @Screen_Name
 # 해당 유저의 게시글에 대해 retweet(리트윗) 또는 reply(답글)하고 있는 Tweet을 수집하여
 # twitter_retweet 또는 twitter_reply DB에 저장
-def collect_repost(query):
+def collect_repost(query, inclination):
     # tweepy.Cursor를 통해서 타임라인 게시글 탐색
     cursor = tweepy.Cursor(api.search, q=query).items(1000)
 
@@ -108,8 +109,8 @@ def collect_repost(query):
                     continue
 
                 # INSERT Query 생성
-                insert_qry = "INSERT IGNORE INTO twitter_retweet VALUES('%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', '%s')" \
-                             % (id, screen_name, date, url, content, favorite, retweet, origin_id, origin_screen_name, origin_url)
+                insert_qry = "INSERT IGNORE INTO twitter_retweet VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d, '%s', '%s', '%s')" \
+                             % (id, screen_name, inclination, date, url, content, favorite, retweet, origin_id, origin_screen_name, origin_url)
             else:
                 # origin : 원본에 대한 정보
                 origin_id = post.in_reply_to_user_id
@@ -120,13 +121,14 @@ def collect_repost(query):
                      continue
 
                 # INSERT Query 생성
-                insert_qry = "INSERT IGNORE INTO twitter_reply VALUES('%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', '%s')" \
-                             % (id, screen_name, date, url, content, favorite, retweet, origin_id, origin_screen_name, origin_url)
+                insert_qry = "INSERT IGNORE INTO twitter_reply VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d, '%s', '%s', '%s')" \
+                             % (id, screen_name, inclination, date, url, content, favorite, retweet, origin_id, origin_screen_name, origin_url)
 
             # INSERT Query 실행
             qry.execute(insert_qry)
             conn.commit()
 
+        # Tweepy API Interval
         except tweepy.TweepError:
             print("Waits...")
             time.sleep(60 * 15 + 1)
@@ -160,11 +162,11 @@ if __name__ == '__main__':
         #     continue
 
         print("Crawling %s's tweet..." % name)
-        collect_tweet(id)
+        collect_tweet(id, inclination)
         print("Complete Crawling %s's tweet!" % name)
 
         print("Crawling Repost(Retweet/Reply) to %s's tweet" % name)
-        collect_repost("@%s" % screen_name)
+        collect_repost("@%s" % screen_name, inclination)
         print("Complete Crawling Repost(Retweet/Reply) to %s's tweet" % name)
 
 
