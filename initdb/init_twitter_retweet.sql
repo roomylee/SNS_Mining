@@ -1,4 +1,4 @@
-USE SNS_Mining
+USE SNS_Mining;
 
 CREATE TABLE twitter_retweet(
 	Twitter_ID varchar(50) not null,

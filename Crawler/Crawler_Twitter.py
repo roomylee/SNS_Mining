@@ -17,9 +17,11 @@ oAuth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth_handler=oAuth)
 
 # Database Account Info.
-config = {'user':***REMOVED***,
-        'password':***REMOVED***,
-        'database':***REMOVED***}
+config = {'host':***REMOVED***,
+          'port':***REMOVED***,
+          'user':***REMOVED***,
+          'password':***REMOVED***,
+          'database':***REMOVED***}
 conn = msc.connect(**config)
 qry = conn.cursor(buffered=True)
 
@@ -47,7 +49,7 @@ def collect_tweet(id, inclination):
             favorite = post.favorite_count
             retweet = post.retweet_count
 
-            content = content.replace("'","\\\'")
+            content = content.replace("'","''")
 
             # INSERT Query 생성
             insert_qry = "INSERT IGNORE INTO twitter_tweet VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d)" \
@@ -97,20 +99,21 @@ def collect_repost(query, inclination):
             favorite = post.favorite_count
             retweet = post.retweet_count
 
-            content = content.replace("'", "\\\'")
+            content = content.replace("'", "''")
 
             if hasattr(post, 'retweeted_status'):
-                # origin : 원본에 대한 정보
-                origin_id = post.author.id
-                origin_screen_name = post.retweeted_status.user.screen_name
-                origin_url = post.retweeted_status.id
-
-                if "@%s" % origin_screen_name != query:
-                    continue
-
-                # INSERT Query 생성
-                insert_qry = "INSERT IGNORE INTO twitter_retweet VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d, '%s', '%s', '%s')" \
-                             % (id, screen_name, inclination, date, url, content, favorite, retweet, origin_id, origin_screen_name, origin_url)
+                # # origin : 원본에 대한 정보
+                # origin_id = post.author.id
+                # origin_screen_name = post.retweeted_status.user.screen_name
+                # origin_url = post.retweeted_status.id
+                #
+                # if "@%s" % origin_screen_name != query:
+                #     continue
+                #
+                # # INSERT Query 생성
+                # insert_qry = "INSERT IGNORE INTO twitter_retweet VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d, '%s', '%s', '%s')" \
+                #              % (id, screen_name, inclination, date, url, content, favorite, retweet, origin_id, origin_screen_name, origin_url)
+                continue
             else:
                 # origin : 원본에 대한 정보
                 origin_id = post.in_reply_to_user_id
@@ -118,7 +121,9 @@ def collect_repost(query, inclination):
                 origin_url = post.in_reply_to_status_id
 
                 if "@%s" % origin_screen_name != query:
-                     continue
+                    continue
+                if origin_url == None:
+                    continue
 
                 # INSERT Query 생성
                 insert_qry = "INSERT IGNORE INTO twitter_reply VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d, '%s', '%s', '%s')" \

@@ -1,7 +1,7 @@
 USE SNS_Mining;
 
-CREATE TABle politician(
-	Name varchar(50) not null, 
+CREATE TABLE politician(
+	Name varchar(50) not null,
 	Screen_Name varchar(50) not null,
 	Twitter_ID varchar(50) not null, 
 	Inclination int, 
