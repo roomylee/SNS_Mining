@@ -81,6 +81,7 @@ def collect_repost(query, inclination):
     # tweepy.Cursor를 통해서 타임라인 게시글 탐색
     cursor = tweepy.Cursor(api.search, q=query).items(1000)
 
+    count = 0
     while True:
         try:
             post = cursor.next()
@@ -130,6 +131,7 @@ def collect_repost(query, inclination):
                              % (id, screen_name, inclination, date, url, content, favorite, retweet, origin_id, origin_screen_name, origin_url)
 
             # INSERT Query 실행
+            count += 1
             qry.execute(insert_qry)
             conn.commit()
 
@@ -147,6 +149,7 @@ def collect_repost(query, inclination):
 
         except StopIteration:
             break
+    print("Count of colleted tweet: %s" % count)
 
 if __name__ == '__main__':
     # 타켓 정치인 목록 가져오기
