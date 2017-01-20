@@ -5,7 +5,8 @@ import operator
 
 class NLP_Engine:
     def __init__(self):
-        self.engines = [Kkma(), Hannanum(), Mecab(), Twitter()]
+        #self.engines = [Kkma(), Hannanum(), Mecab(), Twitter()]
+        self.engines = [Kkma(), Hannanum(), None, Twitter()]
 
     def ExtractNoun(self, sentence, eng):
         noun = self.engines[eng].nouns(sentence)
@@ -18,7 +19,9 @@ class NLP_Engine:
 
 def extract_frequent_words(mysql_query, is_repost=None):
     # connect MySQL
-    config = {'user': ***REMOVED***,
+    config = {'host':***REMOVED***,
+              'port':***REMOVED***,
+              'user': ***REMOVED***,
               'password': ***REMOVED***,
               'database': ***REMOVED***}
     conn = msc.connect(**config)
@@ -45,7 +48,7 @@ def extract_frequent_words(mysql_query, is_repost=None):
     nlp = NLP_Engine()
     word_freq = {}
     for text in twitter_df['Contents']:
-        token = nlp.ExtractPOS(text, Mecab)
+        token = nlp.ExtractPOS(text, Kkma)
         for word in token:
             if word[1] in list(['NNG', 'NNP', 'VV', 'VA', 'MM', 'MAG']):
                 if word[0] in word_freq:

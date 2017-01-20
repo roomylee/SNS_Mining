@@ -79,7 +79,7 @@ def collect_tweet(id, inclination):
 # twitter_retweet 또는 twitter_reply DB에 저장
 def collect_repost(query, inclination):
     # tweepy.Cursor를 통해서 타임라인 게시글 탐색
-    cursor = tweepy.Cursor(api.search, q=query).items(1000)
+    cursor = tweepy.Cursor(api.search, q=query).items(500)
 
     count = 0
     while True:
@@ -170,7 +170,7 @@ if __name__ == '__main__':
         #     continue
 
         print("Crawling %s's tweet..." % name)
-        collect_tweet(id, inclination)
+        # collect_tweet(id, inclination)
         print("Complete Crawling %s's tweet!" % name)
 
         print("Crawling Repost(Retweet/Reply) to %s's tweet" % name)
