@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 from konlpy.tag import *
 import mysql.connector as msc
 import pandas as pd
@@ -14,7 +16,7 @@ class NLP_Engine:
         return noun
 
     def ExtractPOS(self, sentence, eng):
-        POS = self.engines[eng].pos(sentence)
+        POS = self.engines[eng].pos(sentence, norm=True, stem=True)
         return POS
 
 
@@ -51,7 +53,7 @@ def extract_frequent_words(mysql_query, is_repost=None):
     for text in twitter_df['Contents']:
         result = nlp.ExtractPOS(text, Twitter)
         for word, pos in result:
-            if pos in list(['Noun', 'Verb', 'Adjective']):
+            if pos in list(['Noun', 'Vern', 'Adjective', 'Adverb']):
                 word_list.append(word)
             else:
                 continue
