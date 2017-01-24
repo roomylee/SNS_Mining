@@ -2,6 +2,7 @@ from konlpy.tag import *
 import mysql.connector as msc
 import pandas as pd
 import operator
+from collections import Counter
 
 class NLP_Engine:
     def __init__(self):
@@ -46,23 +47,36 @@ def extract_frequent_words(mysql_query, is_repost=None):
     Twitter = 3
 
     nlp = NLP_Engine()
-    word_freq = {}
+    word_list = list()
     for text in twitter_df['Contents']:
-        token = nlp.ExtractPOS(text, Kkma)
-        for word in token:
-            if word[1] in list(['NNG', 'NNP', 'VV', 'VA', 'MM', 'MAG']):
-                if word[0] in word_freq:
-                    word_freq[word[0]] = word_freq[word[0]] + 1
-                else:
-                    word_freq[word[0]] = 1
+        result = nlp.ExtractPOS(text, Twitter)
+        for word, pos in result:
+            if pos in list(['Noun', 'Verb', 'Adjective']):
+                word_list.append(word)
+            else:
+                continue
 
-    sorted_list = sorted(word_freq.items(), key=operator.itemgetter(1))
-    sorted_list.reverse()
+    word_freq = Counter(word_list)
 
-    for i in range(0, 20):
-        print("Rank %2d. %s" % (i+1, sorted_list[i]))
+    return word_freq.most_common(100)
 
-    return sorted_list
+    # word_freq = {}
+    # for text in twitter_df['Contents']:
+    #     token = nlp.ExtractPOS(text, Kkma)
+    #     for word in token:
+    #         if word[1] in list(['NNG', 'NNP', 'VV', 'VA', 'MM', 'MAG']):
+    #             if word[0] in word_freq:
+    #                 word_freq[word[0]] = word_freq[word[0]] + 1
+    #             else:
+    #                 word_freq[word[0]] = 1
+    #
+    # sorted_list = sorted(word_freq.items(), key=operator.itemgetter(1))
+    # sorted_list.reverse()
+    #
+    # for i in range(0, 20):
+    #     print("Rank %2d. %s" % (i+1, sorted_list[i]))
+    #
+    # return sorted_list
 
 
 if __name__ == '__main__':
