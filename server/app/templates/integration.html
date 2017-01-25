@@ -28,59 +28,6 @@
 
 
 
-<!-- 
-    <script type="text/javascript">
-        var stmnLEFT = 100; // 오른쪽 여백 
-        var stmnRIGHT = 100; // 왼쪽 여백
-        var stmnGAP1 = 0; // 위쪽 여백 
-        var stmnGAP2 = 150; // 스크롤시 브라우저 위쪽과 떨어지는 거리 
-        var stmnBASE = 150; // 스크롤 시작위치 
-        var stmnActivateSpeed = 10; //스크롤을 인식하는 딜레이 (숫자가 클수록 느리게 인식)
-        var stmnScrollSpeed = 20; //스크롤 속도 (클수록 느림)
-        var stmnTimer; 
- 
-        function RefreshLeftMenu() { 
-            var stmnStartPoint, stmnEndPoint; 
-            stmnStartPoint = parseInt(document.getElementById('LEFTMENU').style.top, 10); 
-            stmnEndPoint = Math.max(document.documentElement.scrollTop, document.body.scrollTop) + stmnGAP2; 
-            if (stmnEndPoint < stmnGAP1) stmnEndPoint = stmnGAP1; 
-            if (stmnStartPoint != stmnEndPoint) { 
-                stmnScrollAmount = Math.ceil( Math.abs( stmnEndPoint - stmnStartPoint ) / 15 ); 
-                document.getElementById('LEFTMENU').style.top = parseInt(document.getElementById('LEFTMENU').style.top, 10) + ( ( stmnEndPoint<stmnStartPoint ) ? -stmnScrollAmount : stmnScrollAmount ) + 'px'; 
-                stmnRefreshTimer = stmnScrollSpeed; 
-            }
-            stmnTimer = setTimeout("RefreshLeftMenu();", stmnActivateSpeed); 
-        }
-        function RefreshRightMenu() { 
-            var stmnStartPoint, stmnEndPoint; 
-            stmnStartPoint = parseInt(document.getElementById('RIGHTMENU').style.top, 10); 
-            stmnEndPoint = Math.max(document.documentElement.scrollTop, document.body.scrollTop) + stmnGAP2; 
-            if (stmnEndPoint < stmnGAP1) stmnEndPoint = stmnGAP1; 
-            if (stmnStartPoint != stmnEndPoint) { 
-                stmnScrollAmount = Math.ceil( Math.abs( stmnEndPoint - stmnStartPoint ) / 15 ); 
-                document.getElementById('RIGHTMENU').style.top = parseInt(document.getElementById('RIGHTMENU').style.top, 10) + ( ( stmnEndPoint<stmnStartPoint ) ? -stmnScrollAmount : stmnScrollAmount ) + 'px'; 
-                stmnRefreshTimer = stmnScrollSpeed; 
-            }
-            stmnTimer = setTimeout("RefreshRightMenu();", stmnActivateSpeed); 
-        } 
-        function InitializeLeftMenu() {
-            document.getElementById('LEFTMENU').style.left = stmnRIGHT + 'px';  //처음에 왼쪽에 위치.
-            document.getElementById('LEFTMENU').style.top = document.body.scrollTop + stmnBASE + 'px'; 
-            RefreshLeftMenu();
-        }
-        function InitializeRightMenu() {
-            document.getElementById('RIGHTMENU').style.right = stmnLEFT + 'px';  //처음에 오른쪽에 위치.
-            document.getElementById('RIGHTMENU').style.top = document.body.scrollTop + stmnBASE + 'px'; 
-            RefreshRightMenu();
-        }        
-        function Init(){
-            InitializeLeftMenu();
-            InitializeRightMenu();
-                               
-        }
-    </script>
- -->
-
     <style type="text/css">
         #RIGHTMENU { margin: 0pt; padding: 0pt;  position: absolute; right: 0px; top: 0px;}
         #LEFTMENU { margin: 0pt; padding: 0pt;  position: absolute; left: 0px; top: 0px;}
@@ -89,9 +36,152 @@
         body {font-family:'Jeju Gothic', sans-serif;}   
     </style>
 
+    <!-- jQuery -->
+    <script src="../static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/js/bootstrap.min.js"></script>
+
+    <script>
+        $(window).load(function() {
+            $('.button-checkbox').each(function () {
+                // Settings
+                var $widget = $(this),
+                    $button = $widget.find('button'),
+                    $checkbox = $widget.find('input:checkbox'),
+                    color = $button.data('color'),
+                    settings = {
+                        on: {
+                            icon: 'glyphicon glyphicon-check'
+                        },
+                        off: {
+                            icon: 'glyphicon glyphicon-unchecked'
+                        }
+                    };
+
+                // Event Handlers
+                $button.on('click', function () {
+                    $checkbox.prop('checked', !$checkbox.is(':checked'));
+                    $checkbox.triggerHandler('change');
+                    updateDisplay();
+                });
+                $checkbox.on('change', function () {
+                    updateDisplay();
+                });
+
+                // Actions
+                function updateDisplay() {
+                    var isChecked = $checkbox.is(':checked');
+
+                    // Set the button's state
+                    $button.data('state', (isChecked) ? "on" : "off");
+
+                    // Set the button's icon
+                    $button.find('.state-icon')
+                        .removeClass()
+                        .addClass('state-icon ' + settings[$button.data('state')].icon);
+
+                    // Update the button's color
+                    if (isChecked) {
+                        $button
+                            .removeClass('btn-default')
+                            .addClass('btn-' + color);
+                    }
+                    else {
+                        $button
+                            .removeClass('btn-' + color)
+                            .addClass('btn-default');
+                    }
+                }
+
+                // Initialization
+                function init() {
+
+                    updateDisplay();
+
+                    // Inject the icon if applicable
+                    if ($button.find('.state-icon').length == 0) {
+                        $button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i> ');
+                    }
+                }
+                init();
+            });
+        });
+    </script>
+
+    <script>
+        function button_generate(list, json){
+            data = JSON.parse(json)
+                                                    
+            var i;
+            for(i=0;i<data['Name'].length;i+=3){
+                if(i+2<data['Name'].length){
+                    $("#"+list).append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data['Name'][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data['Name'][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data['Name'][i+2]+"</button><input type='checkbox' class='hidden' checked /></span></div>");
+                }
+                else if(i+1<data['Name'].length){
+                    $("#"+list).append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data['Name'][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data['Name'][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
+                }
+                else{
+                    $("#"+list).append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data['Name'][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
+                }
+            }
+        }
+    </script>
+
+    <script>
+        $('#btn-l1').click(function(){
+            $("#btn-l2").removeClass("btn-primary");
+            $("#btn-l2").addClass("btn-default");
+            $("#btn-l3").removeClass("btn-primary");
+            $("#btn-l3").addClass("btn-default");
+            $("#btn-l1").removeClass("btn-default");
+            $("#btn-l1").addClass("btn-primary");
+        });
+        $('#btn-l2').click(function(){
+            $("#btn-l1").removeClass("btn-primary");
+            $("#btn-l1").addClass("btn-default");
+            $("#btn-l3").removeClass("btn-primary");
+            $("#btn-l3").addClass("btn-default");
+            $("#btn-l2").removeClass("btn-default");
+            $("#btn-l2").addClass("btn-primary");
+        });
+        $('#btn-l3').click(function(){
+            $("#btn-l1").removeClass("btn-primary");
+            $("#btn-l1").addClass("btn-default");
+            $("#btn-l2").removeClass("btn-primary");
+            $("#btn-l2").addClass("btn-default");
+            $("#btn-l3").removeClass("btn-default");
+            $("#btn-l3").addClass("btn-primary");
+        });
+        $('#btn-r1').click(function(){
+            $("#btn-r2").removeClass("btn-primary");
+            $("#btn-r2").addClass("btn-default");
+            $("#btn-r3").removeClass("btn-primary");
+            $("#btn-r3").addClass("btn-default");
+            $("#btn-r1").removeClass("btn-default");
+            $("#btn-r1").addClass("btn-primary");
+        });
+        $('#btn-r2').click(function(){
+            $("#btn-r1").removeClass("btn-primary");
+            $("#btn-r1").addClass("btn-default");
+            $("#btn-r3").removeClass("btn-primary");
+            $("#btn-r3").addClass("btn-default");
+            $("#btn-r2").removeClass("btn-default");
+            $("#btn-r2").addClass("btn-primary");
+        });
+        $('#btn-r3').click(function(){
+            $("#btn-r1").removeClass("btn-primary");
+            $("#btn-r1").addClass("btn-default");
+            $("#btn-r2").removeClass("btn-primary");
+            $("#btn-r2").addClass("btn-default");
+            $("#btn-r3").removeClass("btn-default");
+            $("#btn-r3").addClass("btn-primary");
+        });
+    </script>
+
 </head>
 
-<body onload="load();">
+<body>
 
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -163,7 +253,7 @@
                                 <form method="post">
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div id="left_table" class="col-md-6 text-center">
+                                            <div id="left_btn_list" class="col-md-6 text-center">
                                                 <div class="col-md-6">
                                                     <span class="button-checkbox">
                                                         <button type="button" class="btn btn-block" data-color="primary">전체 선택</button>
@@ -179,109 +269,13 @@
                                                     </span>
                                                 </div>
                                                 <br>
-
-                                                <!-- <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">김부겸</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">김성식</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">김진표</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">문재인</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">민병두</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">박범계</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">박영선</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">박원순</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">박지원</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">송영길</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">안철수</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">안희정</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">이재명</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">정동영</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">정세균</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">진영</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">천정배</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">추미애</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">표창원</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary" disabled>no one</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary" disabled>no one</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div> -->
+                                                <script>
+                                                    button_generate("left_btn_list", {{ left_people|tojson|safe }});
+                                                </script>
                                             </div>
 
 
-                                            <div id="right_table" class="col-md-6 text-center">
+                                            <div id="right_btn_list" class="col-md-6 text-center">
                                                 <div class="col-md-6">
                                                     <span class="button-checkbox">
                                                         <button type="button" class="btn btn-block" data-color="primary">전체 선택</button>
@@ -297,78 +291,9 @@
                                                     </span>
                                                 </div>
                                                 <br>
-                                                
-
-                                                <!-- <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">김무성</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">김진태</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">나경원</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">남경필</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">서청원</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">심재철</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">원유철</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">원희룡</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">이준석</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">장제원</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">정우택</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">정진석</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div>
-                                                <div class="btn-group btn-group-justified col-md-12" role="group">
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary">최경환</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary" disabled>no one</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                    <span class="button-checkbox btn-group" role="group">
-                                                        <button type="button" class="btn" data-color="primary" disabled>no one</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
-                                                </div> -->
+                                                <script>
+                                                    button_generate("right_btn_list", {{ right_people|tojson|safe }});
+                                                </script>
                                             </div>
                                         </div>
                                     </div>
@@ -377,7 +302,6 @@
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                         <span class="button">
                                             <button type="button" class="btn btn-primary">Save changes</button>
-                                            <input type="submit" class="hidden">
                                         </span>
                                     </div>
                                 </form>
@@ -439,26 +363,6 @@
                         </tbody>
                     </table>
 
-                    <!-- 페이지 넘버링 네비게이션 -->
-                    <!-- <nav class="text-center">
-                        <ul class="pagination">
-                            <li>
-                                <a href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                            <li>
-                                <a href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav> -->
                 </div>
             </div>
             <div class="col-lg-6 text-center">
@@ -510,26 +414,6 @@
                         </tbody>
                     </table>
 
-                    <!-- 페이지 넘버링 네비게이션 -->
-                    <!-- <nav class="text-center">
-                        <ul class="pagination">
-                            <li>
-                                <a href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                            <li>
-                                <a href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav> -->
                 </div>
             </div>
         </div>
@@ -563,206 +447,7 @@
     </div>
     <!-- /.container -->
 
-    <!--사이드배너, 광고, 메뉴 소스 넣어줍니다-->
-    <!-- <div id="RIGHTMENU">
-        <div class="col-lg-12 text-center">
-            <h3>보수 정치인</h3>
-            <p>새누리당</p>
-            <div class="btn-group-vertical btn-group-lg" role="group" aria-label="...">
-                <button type="button" class="btn btn-primary">전체</button>
-                <button type="button" class="btn btn-primary">정치인 1</button>
-                <button type="button" class="btn btn-primary">정치인 2</button>
-                <button type="button" class="btn btn-primary">정치인 3</button>
-            </div>
-            <br><br>
-            <div class="btn-group-vertical btn-group" role="group" aria-label="...">
-                <button type="button" class="btn btn-warning">적용</button>
-                <button type="button" class="btn btn-default">원래대로</button>
-            </div>
-        </div>
-    </div>
-    <div id="LEFTMENU">
-        <div class="col-lg-12 text-center">
-            <h3>진보 정치인</h3>
-            <p>더불어민주당<br>국민의당</p>
-            <div class="btn-group-vertical btn-group-lg" role="group">
-                <button type="button" class="btn btn-primary">전체</button>
-                <button type="button" class="btn btn-primary">정치인 1</button>
-                <button type="button" class="btn btn-primary">정치인 2</button>
-                <button type="button" class="btn btn-primary">정치인 3</button>
-            </div>
-            <br><br>
-            <div class="btn-group-vertical btn-group" role="group">
-                <button type="button" class="btn btn-warning">적용!</button>
-                <button type="button" class="btn btn-default">원래대로</button>
-            </div>
-        </div>
-    </div> -->
-    <!--사이드배너 끝 -->
-
-
-
-    <!-- jQuery -->
-    <script src="../static/js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="../static/js/bootstrap.min.js"></script>
-
-    <script>
-        $(window).load(function() {
-            $('.button-checkbox').each(function () {
-
-                // Settings
-                var $widget = $(this),
-                    $button = $widget.find('button'),
-                    $checkbox = $widget.find('input:checkbox'),
-                    color = $button.data('color'),
-                    settings = {
-                        on: {
-                            icon: 'glyphicon glyphicon-check'
-                        },
-                        off: {
-                            icon: 'glyphicon glyphicon-unchecked'
-                        }
-                    };
-
-                // Event Handlers
-                $button.on('click', function () {
-                    $checkbox.prop('checked', !$checkbox.is(':checked'));
-                    $checkbox.triggerHandler('change');
-                    updateDisplay();
-                });
-                $checkbox.on('change', function () {
-                    updateDisplay();
-                });
-
-                // Actions
-                function updateDisplay() {
-                    var isChecked = $checkbox.is(':checked');
-
-                    // Set the button's state
-                    $button.data('state', (isChecked) ? "on" : "off");
-
-                    // Set the button's icon
-                    $button.find('.state-icon')
-                        .removeClass()
-                        .addClass('state-icon ' + settings[$button.data('state')].icon);
-
-                    // Update the button's color
-                    if (isChecked) {
-                        $button
-                            .removeClass('btn-default')
-                            .addClass('btn-' + color);
-                    }
-                    else {
-                        $button
-                            .removeClass('btn-' + color)
-                            .addClass('btn-default');
-                    }
-                }
-
-                // Initialization
-                function init() {
-
-                    updateDisplay();
-
-                    // Inject the icon if applicable
-                    if ($button.find('.state-icon').length == 0) {
-                        $button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i> ');
-                    }
-                }
-                init();
-            });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function(){
-            $.ajax({
-                type: "POST",
-                url: "/plist",
-                dataType: 'json',
-                success: function(data){
-                    var i=0;
-                    for(i=0;i<data["left"][0].length;i+=3){
-                        if(i+2<data["left"][0].length){
-                            $("#left_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i+2]+"</button><input type='checkbox' class='hidden' checked /></span></div>");
-                        }
-                        else if(i+1<data["left"][0].length){
-                            $("#left_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
-                        }
-                        else{
-                            $("#left_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
-                        }
-                    }
-
-                    for(i=0;i<data["right"][0].length;i+=3){
-                        if(i+2<data["right"][0].length){
-                            $("#right_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i+2]+"</button><input type='checkbox' class='hidden' checked /></span></div>");
-                        }
-                        else if(i+1<data["right"][0].length){
-                            $("#right_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
-                        }
-                        else{
-                            $("#right_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
-                        }
-                    }
-                }
-            });
-            
-        });
-    </script>
-
-    <script>
-        $('#btn-l1').click(function(){
-            $("#btn-l2").removeClass("btn-primary");
-            $("#btn-l2").addClass("btn-default");
-            $("#btn-l3").removeClass("btn-primary");
-            $("#btn-l3").addClass("btn-default");
-            $("#btn-l1").removeClass("btn-default");
-            $("#btn-l1").addClass("btn-primary");
-        });
-        $('#btn-l2').click(function(){
-            $("#btn-l1").removeClass("btn-primary");
-            $("#btn-l1").addClass("btn-default");
-            $("#btn-l3").removeClass("btn-primary");
-            $("#btn-l3").addClass("btn-default");
-            $("#btn-l2").removeClass("btn-default");
-            $("#btn-l2").addClass("btn-primary");
-        });
-        $('#btn-l3').click(function(){
-            $("#btn-l1").removeClass("btn-primary");
-            $("#btn-l1").addClass("btn-default");
-            $("#btn-l2").removeClass("btn-primary");
-            $("#btn-l2").addClass("btn-default");
-            $("#btn-l3").removeClass("btn-default");
-            $("#btn-l3").addClass("btn-primary");
-        });
-        $('#btn-r1').click(function(){
-            $("#btn-r2").removeClass("btn-primary");
-            $("#btn-r2").addClass("btn-default");
-            $("#btn-r3").removeClass("btn-primary");
-            $("#btn-r3").addClass("btn-default");
-            $("#btn-r1").removeClass("btn-default");
-            $("#btn-r1").addClass("btn-primary");
-        });
-        $('#btn-r2').click(function(){
-            $("#btn-r1").removeClass("btn-primary");
-            $("#btn-r1").addClass("btn-default");
-            $("#btn-r3").removeClass("btn-primary");
-            $("#btn-r3").addClass("btn-default");
-            $("#btn-r2").removeClass("btn-default");
-            $("#btn-r2").addClass("btn-primary");
-        });
-        $('#btn-r3').click(function(){
-            $("#btn-r1").removeClass("btn-primary");
-            $("#btn-r1").addClass("btn-default");
-            $("#btn-r2").removeClass("btn-primary");
-            $("#btn-r2").addClass("btn-default");
-            $("#btn-r3").removeClass("btn-default");
-            $("#btn-r3").addClass("btn-primary");
-        });
-    </script>
+    
 </body>
 
 </html>
