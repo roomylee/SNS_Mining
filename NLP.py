@@ -19,6 +19,40 @@ class NLP_Engine:
         POS = self.engines[eng].pos(sentence, norm=True, stem=True)
         return POS
 
+def get_frequent_words(people_list, table_list):
+    config = {'host': ***REMOVED***,
+              'port': ***REMOVED***,
+              'user': ***REMOVED***,
+              'password': ***REMOVED***,
+              'database': ***REMOVED***}
+    conn = msc.connect(**config)
+    qry = conn.cursor(buffered=True)
+
+    freq_dict = {}
+    for t in table_list:
+        query = "SELECT * FROM %s WHERE " % t
+        flag = False
+        for p in people_list:
+            if flag is False:
+                flag = True
+            else:
+                query += " or "
+            query += "Screen_Name='%s'" % p
+        query += ";"
+        qry.execute(query)
+        row = qry.fetchone()
+        while row is not None:
+            if row[1] in freq_dict:
+                freq_dict[row[1]] = freq_dict[row[1]] + int(row[2])
+            else:
+                freq_dict[row[1]] = int(row[2])
+            row = qry.fetchone()
+
+    sorted_list = sorted(freq_dict.items(), key=operator.itemgetter(1))
+    sorted_list.reverse()
+
+    return sorted_list[:100]
+
 
 def extract_frequent_words(mysql_query, is_repost=None):
     # connect MySQL

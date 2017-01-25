@@ -17,6 +17,8 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/css/round-about.css">
 
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/earlyaccess/jejugothic.css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -24,6 +26,9 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+
+
+<!-- 
     <script type="text/javascript">
         var stmnLEFT = 100; // 오른쪽 여백 
         var stmnRIGHT = 100; // 왼쪽 여백
@@ -74,19 +79,19 @@
                                
         }
     </script>
-
+ -->
 
     <style type="text/css">
         #RIGHTMENU { margin: 0pt; padding: 0pt;  position: absolute; right: 0px; top: 0px;}
         #LEFTMENU { margin: 0pt; padding: 0pt;  position: absolute; left: 0px; top: 0px;}
         #pic_left  {clear: both; height: 350px; position: relative;}
         #pic_right  {clear: both; height: 350px; position: relative;}
-        body {font-family:'나눔바른고딕';}   
+        body {font-family:'Jeju Gothic', sans-serif;}   
     </style>
 
 </head>
 
-<body onload="Init();">
+<body onload="load();">
 
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -99,19 +104,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">AI LAB</a>
+                <a class="navbar-brand">AI LAB</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#" onclick=location.href="/integration">통합(Tweet+Reply)</a>
+                        <a href="/" onclick=location.href="/">통합(Tweet+Reply)</a>
                     </li>
                     <li>
-                        <a href="#" onclick=location.href="/politician">정치인(Tweet)</a>
+                        <a href="/politician" onclick=location.href="/politician">정치인(Tweet)</a>
                     </li>
                     <li>
-                        <a href="#" onclick=location.href="/reply">댓글(Reply)</a>
+                        <a href="/reply" onclick=location.href="/reply">댓글(Reply)</a>
                     </li>
                 </ul>
             </div>
@@ -133,18 +138,257 @@
                 <p>정치적 진영에 따른 텍스트 마이닝을 통해 정치적/사회적 상황의 분석이나 상황이 일어난 뒤의 감성 상태의 변화와 사회적 이벤트(e.g 대통령 선거, 총선, 부동산경기, 증시등락 등) 발생의 예측이 가능.</p>
             </div>
         </div>
-
-        <br>
+        
 
         <!-- Team Members Row -->
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Twitter Analysis</h1>
+                <h1 class="page-header text-left">Twitter Analysis&nbsp;
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModal">
+                        <span class="glyphicon glyphicon-cog"></span>&nbsp;정치인 선택
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">분석할 정치인을 선택해주세요!</h4>
+                                </div>
+                                
+                                <form method="post">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div id="left_table" class="col-md-6 text-center">
+                                                <div class="col-md-6">
+                                                    <span class="button-checkbox">
+                                                        <button type="button" class="btn btn-block" data-color="primary">전체 선택</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <span class="button">
+                                                        <button type="button" class="btn btn-warning btn-block">
+                                                            <span class="glyphicon glyphicon-erase"></span>&nbsp;전체 해제
+                                                        </button>
+                                                        <input type="button" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <br>
+
+                                                <!-- <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">김부겸</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">김성식</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">김진표</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">문재인</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">민병두</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">박범계</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">박영선</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">박원순</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">박지원</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">송영길</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">안철수</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">안희정</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">이재명</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">정동영</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">정세균</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">진영</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">천정배</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">추미애</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">표창원</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary" disabled>no one</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary" disabled>no one</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div> -->
+                                            </div>
+
+
+                                            <div id="right_table" class="col-md-6 text-center">
+                                                <div class="col-md-6">
+                                                    <span class="button-checkbox">
+                                                        <button type="button" class="btn btn-block" data-color="primary">전체 선택</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <span class="button">
+                                                        <button type="button" class="btn btn-warning btn-block">
+                                                            <span class="glyphicon glyphicon-erase"></span>&nbsp;전체 해제
+                                                        </button>
+                                                        <input type="button" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <br>
+                                                
+
+                                                <!-- <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">김무성</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">김진태</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">나경원</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">남경필</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">서청원</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">심재철</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">원유철</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">원희룡</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">이준석</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">장제원</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">정우택</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">정진석</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div>
+                                                <div class="btn-group btn-group-justified col-md-12" role="group">
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary">최경환</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary" disabled>no one</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                    <span class="button-checkbox btn-group" role="group">
+                                                        <button type="button" class="btn" data-color="primary" disabled>no one</button>
+                                                        <input type="checkbox" class="hidden" checked />
+                                                    </span>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <span class="button">
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                            <input type="submit" class="hidden">
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </h1>
             </div>
             <div class="col-lg-6 text-center">
                 <h2>진보
-                    <small>더민주/국민의당 &nbsp;&nbsp;</small>
-                    <button id="btn-choice-left" type="button" class="btn btn-warning">정치인 선택</button>
+                    <small>더민주/국민의당</small>
                 </h2>
 
                 <div style="height: auto; width: 90%; border:3px solid black;padding: 10px;margin: auto;">
@@ -219,8 +463,7 @@
             </div>
             <div class="col-lg-6 text-center">
                 <h2>보수
-                    <small>새누리&nbsp;&nbsp;</small>
-                    <button id="btn-choice-right" type="button" class="btn btn-warning">정치인 선택</button>
+                    <small>새누리당</small>
                 </h2>
 
                 <div style="height: auto; width: 90%; border:3px solid black;padding: 10px;margin: auto;">
@@ -321,7 +564,7 @@
     <!-- /.container -->
 
     <!--사이드배너, 광고, 메뉴 소스 넣어줍니다-->
-    <div id="RIGHTMENU">
+    <!-- <div id="RIGHTMENU">
         <div class="col-lg-12 text-center">
             <h3>보수 정치인</h3>
             <p>새누리당</p>
@@ -354,7 +597,7 @@
                 <button type="button" class="btn btn-default">원래대로</button>
             </div>
         </div>
-    </div>
+    </div> -->
     <!--사이드배너 끝 -->
 
 
@@ -365,6 +608,110 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="../static/js/bootstrap.min.js"></script>
 
+    <script>
+        $(window).load(function() {
+            $('.button-checkbox').each(function () {
+
+                // Settings
+                var $widget = $(this),
+                    $button = $widget.find('button'),
+                    $checkbox = $widget.find('input:checkbox'),
+                    color = $button.data('color'),
+                    settings = {
+                        on: {
+                            icon: 'glyphicon glyphicon-check'
+                        },
+                        off: {
+                            icon: 'glyphicon glyphicon-unchecked'
+                        }
+                    };
+
+                // Event Handlers
+                $button.on('click', function () {
+                    $checkbox.prop('checked', !$checkbox.is(':checked'));
+                    $checkbox.triggerHandler('change');
+                    updateDisplay();
+                });
+                $checkbox.on('change', function () {
+                    updateDisplay();
+                });
+
+                // Actions
+                function updateDisplay() {
+                    var isChecked = $checkbox.is(':checked');
+
+                    // Set the button's state
+                    $button.data('state', (isChecked) ? "on" : "off");
+
+                    // Set the button's icon
+                    $button.find('.state-icon')
+                        .removeClass()
+                        .addClass('state-icon ' + settings[$button.data('state')].icon);
+
+                    // Update the button's color
+                    if (isChecked) {
+                        $button
+                            .removeClass('btn-default')
+                            .addClass('btn-' + color);
+                    }
+                    else {
+                        $button
+                            .removeClass('btn-' + color)
+                            .addClass('btn-default');
+                    }
+                }
+
+                // Initialization
+                function init() {
+
+                    updateDisplay();
+
+                    // Inject the icon if applicable
+                    if ($button.find('.state-icon').length == 0) {
+                        $button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i> ');
+                    }
+                }
+                init();
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                type: "POST",
+                url: "/plist",
+                dataType: 'json',
+                success: function(data){
+                    var i=0;
+                    for(i=0;i<data["left"][0].length;i+=3){
+                        if(i+2<data["left"][0].length){
+                            $("#left_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i+2]+"</button><input type='checkbox' class='hidden' checked /></span></div>");
+                        }
+                        else if(i+1<data["left"][0].length){
+                            $("#left_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
+                        }
+                        else{
+                            $("#left_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["left"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
+                        }
+                    }
+
+                    for(i=0;i<data["right"][0].length;i+=3){
+                        if(i+2<data["right"][0].length){
+                            $("#right_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i+2]+"</button><input type='checkbox' class='hidden' checked /></span></div>");
+                        }
+                        else if(i+1<data["right"][0].length){
+                            $("#right_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
+                        }
+                        else{
+                            $("#right_table").append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data["right"][0][i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
+                        }
+                    }
+                }
+            });
+            
+        });
+    </script>
 
     <script>
         $('#btn-l1').click(function(){
