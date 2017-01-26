@@ -53,7 +53,6 @@ def main():
     right_p = {'Name': right_people[0],
               'Screen_Name': right_people[1]}
 
-    print(json.dumps(left_p, ensure_ascii=False))
     return render_template('integration.html', db_left=left_word, db_right=right_word,
                            left_people=json.dumps(left_p), right_people=json.dumps(right_p, ensure_ascii=False))
 
