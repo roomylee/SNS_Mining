@@ -42,7 +42,7 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="../static/js/bootstrap.min.js"></script>
 
-    <script>
+    <!-- <script>
         $(window).load(function() {
             $('.button-checkbox').each(function () {
                 // Settings
@@ -107,25 +107,40 @@
                 init();
             });
         });
-    </script>
+    </script> -->
 
     <script>
         function button_generate(inclination, json){
             data = JSON.parse(json);
             var i;
-            for(i=0;i<data.length;i+=3){
-                if(i+2<data.length){
-                    $("#"+inclination).append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data[i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data[i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data[i+2]+"</button><input type='checkbox' class='hidden' checked /></span></div>");
+            var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
+                "정세균","진영","천정배","추미애","표창원"]
+            var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                 "원희룡","이준석","장제원","정우택","정진석","최경환"];
+            if(inclination.substring(0,4) == "left"){
+                for(i=0;i<left_politician.length;i++){
+                    if(data.indexOf(left_politician[i]) > -1){
+                        $("#"+inclination).append("<input type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"' checked>"+left_politician[i]+"</input>");
+                    }
+                    else{
+                        $("#"+inclination).append("<input type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"'>"+left_politician[i]+"</input>");
+                    }
                 }
-                else if(i+1<data.length){
-                    $("#"+inclination).append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data[i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data[i+1]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
-                }
-                else{
-                    $("#"+inclination).append("<div class='btn-group btn-group-justified col-md-12' role='group'><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary'>"+data[i]+"</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span><span class='button-checkbox btn-group' role='group'><button type='button' class='btn' data-color='primary' disabled>no one</button><input type='checkbox' class='hidden' checked /></span></div>");
+            }
+            else{
+                for(i=0;i<right_politician.length;i++){
+                    if(data.indexOf(right_politician[i]) > -1){
+                        $("#"+inclination).append("<input type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"' checked>"+right_politician[i]+"</input>");
+                    }
+                    else{
+                        $("#"+inclination).append("<input type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"'>"+right_politician[i]+"</input>");
+                    }
                 }
             }
         }
     </script>
+
 
 </head>
 
@@ -269,7 +284,7 @@
 
 
                                         <span class="button">
-                                            <input type="submit" class="btn btn-primary" value="적용">
+                                            <input type="submit" class="btn btn-primary" value="적용" onclick="submit_list();">
                                         </span>
                                     </div>
                                 </div>
@@ -415,16 +430,22 @@
     </div>
     <!-- /.container -->
 
+
     <script>
         function submit_list(){
             // name이 같은 체크박스의 값들을 배열에 담는다.
-            var checkboxValues = [];
-            $("input[name='ck']:checked").each(function(i) {
-                checkboxValues.push($(this).val());
+            var left = [];
+            var right = [];
+            // button을 input으로 바꾸고 name 설정
+            $("input[name='left_btn_list-ck']:checked").each(function(i) {
+                left.push($(this).val());
+            });
+            $("input[name='right_btn_list-ck']:checked").each(function(i) {
+                right.push($(this).val());
             });
              
             // 사용자 ID(문자열)와 체크박스 값들(배열)을 name/value 형태로 담는다.
-            var allData = { "left": checkboxValues "right": checkboxValues};
+            var allData = { "left": left, "right": right};
              
             $.ajax({
                 type : "POST",
