@@ -10,112 +10,69 @@ app = Flask(__name__)
 ***REMOVED***
 
 
-# query = "Select * from twitter_reply where Inclination=2"
-# words_left = extract_frequent_words(query, is_repost=True)
-#
-# avg = np.mean(list(zip(*words_left))[1])
-# taglist = pytagcloud.make_tags(words_left[:100], maxsize=13*(words_left[0][1]-avg)/(avg-words_left[99][1]))
-# pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400), fontname='BMHANNA_11yrs_ttf', rectangular=False)
-# print("Left done!")
-#
-#
-# query = "Select * from twitter_reply where Inclination=1"
-# words_right = extract_frequent_words(query, is_repost=True)
-#
-# avg = np.mean(list(zip(*words_right))[1])
-# taglist = pytagcloud.make_tags(words_right[:100], maxsize=13*(words_right[0][1]-avg)/(avg-words_right[99][1]))
-# pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400), fontname='BMHANNA_11yrs_ttf', rectangular=False)
-# print("Right done!")
+left_dic={"김부겸":"hopekbk", "김성식":"okkimss", "김진표":"jinpyo_kim",
+          "문재인":"moonriver365", "민병두":"bdmin1958", "박범계":"bkfire1004",
+          "박영선":"Park_Youngsun", "박원순":"wonsoonpark", "박지원":"jwp615",
+          "송영길":"Bulloger", "안철수":"cheolsoo0919", "안희정":"steelroot",
+          "이재명":"Jaemyung_Lee","정동영":"coreacdy","정세균":"sk0926",
+          "진영":"Chinyoung0413", "천정배":"jb_1000", "추미애":"choomiae",
+          "표창원":"DrPyo"}
+right_dic={"김무성":"kimmoosung","김진태":"jtkim1013","나경원":"Nakw",
+           "남경필":"yesKP","서청원":"scw0403","심재철":"cleanshim",
+           "원유철":"won6767","원희룡":"wonheeryong","이준석":"junseokandylee",
+           "장제원":"Changjewon","정우택":"bigwtc","정진석":"js0904",
+           "최경환":"khwanchoi"}
 
-left_people = [["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
                 "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
-                "정세균","진영","천정배","추미애","표창원"],
-               ["hopekbk","okkimss","jinpyo_kim","moonriver365","bdmin1958",
-                "bkfire1004","Park_Youngsun","wonsoonpark","jwp615","Bulloger",
-                "cheolsoo0919","steelroot","Jaemyung_Lee","coreacdy","sk0926",
-                "Chinyoung0413","jb_1000","choomiae","DrPyo",]]
+                "정세균","진영","천정배","추미애","표창원"]
+left_Screen_Name = ["hopekbk", "okkimss", "jinpyo_kim", "moonriver365",
+                    "bdmin1958", "bkfire1004", "Park_Youngsun", "wonsoonpark",
+                    "jwp615", "Bulloger", "cheolsoo0919", "steelroot",
+                    "Jaemyung_Lee","coreacdy","sk0926", "Chinyoung0413",
+                    "jb_1000", "choomiae", "DrPyo"]
 
-right_people = [["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
-                 "원희룡","이준석","장제원","정우택","정진석","최경환",],
-                ["kimmoosung","jtkim1013","Nakw","yesKP","scw0403","cleanshim",
-                 "won6767","wonheeryong","junseokandylee","Changjewon","bigwtc",
-                 "js0904","khwanchoi",]]
+right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                 "원희룡","이준석","장제원","정우택","정진석","최경환"]
+right_Screen_Name = ["kimmoosung","jtkim1013","Nakw","yesKP","scw0403",
+                    "cleanshim","won6767","wonheeryong","junseokandylee",
+                    "Changjewon","bigwtc","js0904","khwanchoi"]
+
+left_select = left_politician
+right_select = right_politician
+
+
 
 
 @app.route('/')
 def main():
-    with open('./static/json/init_left.json', 'r') as fp:
-        left_word = json.load(fp=fp)
-    with open('./static/json/init_right.json', 'r') as fp:
-        right_word = json.load(fp=fp)
-    left_p = {'Name': left_people[0],
-            'Screen_Name': left_people[1]}
-    right_p = {'Name': right_people[0],
-              'Screen_Name': right_people[1]}
+    left_word = get_frequent_words(left_Screen_Name, ["left_frequency", "left_reply_frequency"])
+    avg = np.mean(list(zip(*left_word))[1])
+    taglist = pytagcloud.make_tags(left_word[:100],
+                                   maxsize=13 * (left_word[0][1] - avg) / (avg - left_word[99][1]))
+    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400),
+                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
+    print("Left done!")
 
-    return render_template('integration.html', db_left=left_word, db_right=right_word,
-                           left_people=json.dumps(left_p), right_people=json.dumps(right_p, ensure_ascii=False))
+    right_word = get_frequent_words(right_Screen_Name, ["right_frequency", "right_reply_frequency"])
+    avg = np.mean(list(zip(*right_word))[1])
+    taglist = pytagcloud.make_tags(right_word[:100],
+                                   maxsize=13 * (right_word[0][1] - avg) / (avg - right_word[99][1]))
+    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400),
+                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
+    print("Right done!")
 
-@app.route('/politician')
-def politician():
-    with open('./static/json/init_left_politician.json', 'r') as fp:
-        left_word = json.load(fp=fp)
-    with open('./static/json/init_right_politician.json', 'r') as fp:
-        right_word = json.load(fp=fp)
-
-    return render_template('politician.html', db_left=left_word, db_right=right_word)
-
-@app.route('/reply')
-def reply():
-    with open('./static/json/init_left_reply.json', 'r') as fp:
-        left_word = json.load(fp=fp)
-    with open('./static/json/init_right_reply.json', 'r') as fp:
-        right_word = json.load(fp=fp)
-
-    return render_template('reply.html', db_left=left_word, db_right=right_word)
+    return render_template('integration.html', left_freq=left_word, right_freq=right_word,
+                           left_select=json.dumps(left_select),
+                           right_select=json.dumps(right_select))
 
 
-@app.route('/plist', methods=["GET", "POST"])
-def politician_list():
-    dict = {'left':left_people,
-            'right':right_people}
-    return json.dumps(dict, ensure_ascii=False)
-
-@app.route('/check_box', methods=["GET", "POST"])
-# url =/aaaaa?param1='문재인'&param2='
+@app.route('/checkbox', methods=["GET", "POST"])
 def check_box():
     if request.method == 'POST':
-        left_word = get_frequent_words(left_people, ["left_reply_frequency"])
-        with open('./static/json/result.json', 'w') as fp:
-            json.dumps(obj=left_word, fp=fp)
-
-
-    return ;
+        left_select = request.json["left"]
+        right_select = request.json["right"]
+    return str(request.json);
 
 if __name__ == '__main__':
-
-
-    # left_word = get_frequent_words(left_people[1], ["left_frequency", "left_reply_frequency"])
-    # right_word = get_frequent_words(right_people[1], ["right_frequency", "right_reply_frequency"])
-    # with open('./static/json/init_left.json', 'w') as fp:
-    #     json.dump(obj=left_word, fp=fp)
-    # with open('./static/json/init_right.json', 'w') as fp:
-    #     json.dump(obj=right_word, fp=fp)
-    #
-    # left_word = get_frequent_words(left_people[1], ["left_frequency"])
-    # right_word = get_frequent_words(right_people[1], ["right_frequency"])
-    # with open('./static/json/init_left_politician.json', 'w') as fp:
-    #     json.dump(obj=left_word, fp=fp)
-    # with open('./static/json/init_right_politician.json', 'w') as fp:
-    #     json.dump(obj=right_word, fp=fp)
-    #
-    # left_word = get_frequent_words(left_people[1], ["left_reply_frequency"])
-    # right_word = get_frequent_words(right_people[1], ["right_reply_frequency"])
-    # with open('./static/json/init_left_reply.json', 'w') as fp:
-    #     json.dump(obj=left_word, fp=fp)
-    # with open('./static/json/init_right_reply.json', 'w') as fp:
-    #     json.dump(obj=right_word, fp=fp)
-
-
-
     app.run()
