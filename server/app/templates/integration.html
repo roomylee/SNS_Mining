@@ -42,7 +42,7 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="../static/js/bootstrap.min.js"></script>
 
-    <!-- <script>
+    <script>
         $(window).load(function() {
             $('.button-checkbox').each(function () {
                 // Settings
@@ -107,8 +107,8 @@
                 init();
             });
         });
-    </script> -->
-
+    </script>
+    
     <script>
         function button_generate(inclination, json){
             data = JSON.parse(json);
@@ -121,26 +121,27 @@
             if(inclination.substring(0,4) == "left"){
                 for(i=0;i<left_politician.length;i++){
                     if(data.indexOf(left_politician[i]) > -1){
-                        $("#"+inclination).append("<input type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"' checked>"+left_politician[i]+"</input>");
+                        $("#"+inclination).append("<div class='col-md-4'><button type='button' class='btn btn-primary btn-block' onclick='l_toggle_ck(`"+i+"`);'>"+left_politician[i]+"</button><input id=left-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"' checked hidden></input></div>");
                     }
                     else{
-                        $("#"+inclination).append("<input type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"'>"+left_politician[i]+"</input>");
+                        $("#"+inclination).append("<div class='col-md-4'><button type='button' class='btn btn-primary btn-block' onclick='l_toggle_ck(`"+i+"`);'>"+left_politician[i]+"</button><input id=left-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"' hidden></input></div>");
                     }
                 }
             }
             else{
                 for(i=0;i<right_politician.length;i++){
                     if(data.indexOf(right_politician[i]) > -1){
-                        $("#"+inclination).append("<input type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"' checked>"+right_politician[i]+"</input>");
+                        $("#"+inclination).append("<div class='col-md-4'><button type='button' class='btn btn-primary btn-block' onclick='r_toggle_ck(`"+i+"`);'>"+right_politician[i]+"</button><input id=right-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"' checked hidden></input></div>");
                     }
                     else{
-                        $("#"+inclination).append("<input type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"'>"+right_politician[i]+"</input>");
+                        $("#"+inclination).append("<div class='col-md-4'><button type='button' class='btn btn-primary btn-block' onclick='r_toggle_ck(`"+i+"`);'>"+right_politician[i]+"</button><input id=right-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"' hidden></input></div>");
                     }
                 }
             }
         }
     </script>
 
+    
 
 </head>
 
@@ -223,18 +224,14 @@
                                         <div class="row">
                                             <div id="left_btn_list" class="col-md-6 text-center">
                                                 <div class="col-md-6">
-                                                    <span class="button-checkbox">
-                                                        <button type="button" class="btn btn-block" data-color="primary">전체 선택</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
+                                                    <button type="button" class="btn btn-primary btn-block" onclick="left_all_select();">
+                                                        <span class="glyphicon glyphicon-ok"></span>&nbsp;전체 선택
+                                                    </button>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <span class="button">
-                                                        <button type="button" class="btn btn-warning btn-block">
-                                                            <span class="glyphicon glyphicon-erase"></span>&nbsp;전체 해제
-                                                        </button>
-                                                        <input type="button" class="hidden" checked />
-                                                    </span>
+                                                    <button type="button" class="btn btn-warning btn-block" onclick="left_all_unselect();">
+                                                        <span class="glyphicon glyphicon-erase"></span>&nbsp;전체 해제
+                                                    </button>
                                                 </div>
                                                 <br>
                                                 <script>
@@ -242,37 +239,28 @@
                                                 </script>
                                             </div>
 
-
                                             <div id="right_btn_list" class="col-md-6 text-center">
                                                 <div class="col-md-6">
-                                                    <span class="button-checkbox">
-                                                        <button type="button" class="btn btn-block" data-color="primary">전체 선택</button>
-                                                        <input type="checkbox" class="hidden" checked />
-                                                    </span>
+                                                    <button type="button" class="btn btn-primary btn-block" onclick="right_all_select();">
+                                                        <span class="glyphicon glyphicon-ok"></span>&nbsp;전체 선택
+                                                    </button>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <span class="button">
-                                                        <button type="button" class="btn btn-warning btn-block">
-                                                            <span class="glyphicon glyphicon-erase"></span>&nbsp;전체 해제
-                                                        </button>
-                                                        <input type="button" class="hidden" checked />
-                                                    </span>
+                                                    <button type="button" class="btn btn-warning btn-block" onclick="right_all_unselect();">
+                                                        <span class="glyphicon glyphicon-erase"></span>&nbsp;전체 해제
+                                                    </button>
                                                 </div>
                                                 <br>
                                                 <script>
                                                     button_generate("right_btn_list", {{ right_select|tojson|safe }});
                                                 </script>
                                             </div>
-                                        </div>
-
-                                        <!-- 취소 테스트 : 이거는 원래대로 잘 됨 -->
-                                        <input type="checkbox" checked>xxx</input>
-                                        
+                                        </div>                                        
                                     </div>
 
                                     <div class="modal-footer">
 
-                                        <!-- 취소할 경우 모두 원래대로 테스트 -->
+                                        <!-- 취소할 경우 모두 원래대로 -->
                                         <input type="reset" class="btn btn-default" data-dismiss="modal" value="취소">
                                         
                                         <script>
@@ -280,8 +268,6 @@
                                                 $(this).find('form')[0].reset();
                                             });
                                         </script>
-                                        <!-- 테스트 끝 -->
-
 
                                         <span class="button">
                                             <input type="submit" class="btn btn-primary" value="적용" onclick="submit_list();">
@@ -430,6 +416,54 @@
     </div>
     <!-- /.container -->
 
+    <script>
+        function l_toggle_ck(num){
+            if($("#left-ck-"+num).prop("checked")){
+                document.getElementById("left-ck-"+num).checked = "";
+            }
+            else{
+                document.getElementById("left-ck-"+num).checked = "checked";
+            }
+        }
+        function r_toggle_ck(num){
+            if($("#right-ck-"+num).prop("checked")){
+                document.getElementById("right-ck-"+num).checked = "";
+            }
+            else{
+                document.getElementById("right-ck-"+num).checked = "checked";
+            }
+        }
+    </script>
+
+    <script>
+        function left_all_select(){
+            $('input:checkbox[name="left_btn_list-ck"]').each(function() {
+                this.checked = true; //checked 처리
+            });
+        }
+    </script>
+    <script>
+        function right_all_select(){
+            $('input:checkbox[name="right_btn_list-ck"]').each(function() {
+                this.checked = true; //checked 처리
+            });
+        }
+    </script>
+
+    <script>
+        function left_all_unselect(){
+            $('input:checkbox[name="left_btn_list-ck"]').each(function() {
+                this.checked = false; //unchecked 처리
+            });
+        }
+    </script>
+    <script>
+        function right_all_unselect(){
+            $('input:checkbox[name="right_btn_list-ck"]').each(function() {
+                this.checked = false; //unchecked 처리
+            });
+        }
+    </script>
 
     <script>
         function submit_list(){
