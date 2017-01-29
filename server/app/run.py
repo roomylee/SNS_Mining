@@ -88,7 +88,7 @@ def tweet():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
-    return render_template('integration.html',
+    return render_template('tweet.html',
                            left_freq=left_word, right_freq=right_word,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
@@ -111,7 +111,7 @@ def reply():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
-    return render_template('integration.html',
+    return render_template('reply.html',
                            left_freq=left_word, right_freq=right_word,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
