@@ -70,6 +70,52 @@ def main():
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
 
+@app.route('/tweet')
+def tweet():
+    left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency"])
+    avg = np.mean(list(zip(*left_word))[1])
+    taglist = pytagcloud.make_tags(left_word[:100],
+                                   maxsize=12 * (left_word[0][1] - avg) / (avg - left_word[99][1]))
+    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400),
+                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
+    print("Left done!")
+
+    right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency"])
+    avg = np.mean(list(zip(*right_word))[1])
+    taglist = pytagcloud.make_tags(right_word[:100],
+                                   maxsize=12 * (right_word[0][1] - avg) / (avg - right_word[99][1]))
+    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400),
+                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
+    print("Right done!")
+
+    return render_template('integration.html',
+                           left_freq=left_word, right_freq=right_word,
+                           left_select=json.dumps(left_select),
+                           right_select=json.dumps(right_select))
+
+@app.route('/reply')
+def reply():
+    left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_reply_frequency"])
+    avg = np.mean(list(zip(*left_word))[1])
+    taglist = pytagcloud.make_tags(left_word[:100],
+                                   maxsize=12 * (left_word[0][1] - avg) / (avg - left_word[99][1]))
+    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400),
+                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
+    print("Left done!")
+
+    right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_reply_frequency"])
+    avg = np.mean(list(zip(*right_word))[1])
+    taglist = pytagcloud.make_tags(right_word[:100],
+                                   maxsize=12 * (right_word[0][1] - avg) / (avg - right_word[99][1]))
+    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400),
+                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
+    print("Right done!")
+
+    return render_template('integration.html',
+                           left_freq=left_word, right_freq=right_word,
+                           left_select=json.dumps(left_select),
+                           right_select=json.dumps(right_select))
+
 
 @app.route('/checkbox', methods=["GET", "POST"])
 def check_box():

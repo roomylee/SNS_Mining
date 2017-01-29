@@ -43,73 +43,6 @@
     <script src="../static/js/bootstrap.min.js"></script>
 
     <script>
-        $(window).load(function() {
-            $('.button-checkbox').each(function () {
-                // Settings
-                var $widget = $(this),
-                    $button = $widget.find('button'),
-                    $checkbox = $widget.find('input:checkbox'),
-                    color = $button.data('color'),
-                    settings = {
-                        on: {
-                            icon: 'glyphicon glyphicon-check'
-                        },
-                        off: {
-                            icon: 'glyphicon glyphicon-unchecked'
-                        }
-                    };
-
-                // Event Handlers
-                $button.on('click', function () {
-                    $checkbox.prop('checked', !$checkbox.is(':checked'));
-                    $checkbox.triggerHandler('change');
-                    updateDisplay();
-                });
-                $checkbox.on('change', function () {
-                    updateDisplay();
-                });
-
-                // Actions
-                function updateDisplay() {
-                    var isChecked = $checkbox.is(':checked');
-
-                    // Set the button's state
-                    $button.data('state', (isChecked) ? "on" : "off");
-
-                    // Set the button's icon
-                    $button.find('.state-icon')
-                        .removeClass()
-                        .addClass('state-icon ' + settings[$button.data('state')].icon);
-
-                    // Update the button's color
-                    if (isChecked) {
-                        $button
-                            .removeClass('btn-default')
-                            .addClass('btn-' + color);
-                    }
-                    else {
-                        $button
-                            .removeClass('btn-' + color)
-                            .addClass('btn-default');
-                    }
-                }
-
-                // Initialization
-                function init() {
-
-                    updateDisplay();
-
-                    // Inject the icon if applicable
-                    if ($button.find('.state-icon').length == 0) {
-                        $button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i> ');
-                    }
-                }
-                init();
-            });
-        });
-    </script>
-    
-    <script>
         function button_generate(inclination, json){
             data = JSON.parse(json);
             var i;
@@ -121,26 +54,27 @@
             if(inclination.substring(0,4) == "left"){
                 for(i=0;i<left_politician.length;i++){
                     if(data.indexOf(left_politician[i]) > -1){
-                        $("#"+inclination).append("<div class='col-md-4'><button type='button' class='btn btn-primary btn-block' onclick='l_toggle_ck(`"+i+"`);'>"+left_politician[i]+"</button><input id=left-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"' checked hidden></input></div>");
+                        $("#"+inclination).append("<div class='col-md-4'><button id='left-btn-"+i+"' type='button' class='btn btn-primary btn-block' onclick='l_toggle_ck(`"+i+"`);'><span id='left-span-"+i+"' class='glyphicon glyphicon-check'></span>&nbsp;"+left_politician[i]+"</button><input id=left-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"' checked hidden></input></div>");
                     }
                     else{
-                        $("#"+inclination).append("<div class='col-md-4'><button type='button' class='btn btn-primary btn-block' onclick='l_toggle_ck(`"+i+"`);'>"+left_politician[i]+"</button><input id=left-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"' hidden></input></div>");
+                        $("#"+inclination).append("<div class='col-md-4'><button id='left-btn-"+i+"' type='button' class='btn btn-default btn-block' onclick='l_toggle_ck(`"+i+"`);'><span id='left-span-"+i+"' class='glyphicon glyphicon-unchecked'></span>&nbsp;"+left_politician[i]+"</button><input id=left-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+left_politician[i]+"' hidden></input></div>");
                     }
                 }
             }
             else{
                 for(i=0;i<right_politician.length;i++){
                     if(data.indexOf(right_politician[i]) > -1){
-                        $("#"+inclination).append("<div class='col-md-4'><button type='button' class='btn btn-primary btn-block' onclick='r_toggle_ck(`"+i+"`);'>"+right_politician[i]+"</button><input id=right-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"' checked hidden></input></div>");
+                        $("#"+inclination).append("<div class='col-md-4'><button id='right-btn-"+i+"' type='button' class='btn btn-primary btn-block' onclick='r_toggle_ck(`"+i+"`);'><span id='right-span-"+i+"' class='glyphicon glyphicon-check'></span>&nbsp;"+right_politician[i]+"</button><input id=right-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"' checked hidden></input></div>");
                     }
                     else{
-                        $("#"+inclination).append("<div class='col-md-4'><button type='button' class='btn btn-primary btn-block' onclick='r_toggle_ck(`"+i+"`);'>"+right_politician[i]+"</button><input id=right-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"' hidden></input></div>");
+                        $("#"+inclination).append("<div class='col-md-4'><button id='right-btn-"+i+"' type='button' class='btn btn-default btn-block' onclick='r_toggle_ck(`"+i+"`);'><span id='right-span-"+i+"' class='glyphicon glyphicon-unchecked'></span>&nbsp;"+right_politician[i]+"</button><input id=right-ck-"+i+" type='checkbox' name='"+inclination+"-ck' value='"+right_politician[i]+"' hidden></input></div>");
                     }
                 }
             }
         }
     </script>
 
+    
     
 
 </head>
@@ -162,7 +96,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">AI LAB</a>
+                <a class="navbar-brand">&nbsp;AI LAB&nbsp;</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -171,7 +105,7 @@
                         <a href="/" onclick=location.href="/">통합(Tweet+Reply)</a>
                     </li>
                     <li>
-                        <a href="/politician" onclick=location.href="/politician">정치인(Tweet)</a>
+                        <a href="/tweet" onclick=location.href="/tweet">정치인(Tweet)</a>
                     </li>
                     <li>
                         <a href="/reply" onclick=location.href="/reply">댓글(Reply)</a>
@@ -191,8 +125,7 @@
             <div class="col-lg-12">
                 <h1 class="page-header">정치적 진영 기반 SNS 텍스트 마이닝
                 </h1>
-                <p>정치적 진영별 SNS 텍스트 마이닝을 통해 정치적 상황에 따른 진영별 감정 상태 변화를 분석하는 모델을 개발하고 분석 및 시각화 도구 개발.</p>
-                <p>정치인들이 많이 활동하는 SNS인 Twitter에 대한 분석.</p>
+                <p>정치인들이 많이 사용하는 SNS인 Twitter의 활동 데이터에 대해 텍스트 마이닝을 통해 정치적 상황에 따른 진영별 감정 상태 변화를 분석하는 모델을 개발하고 분석 및 시각화 도구 개발.</p>
                 <p>정치적 진영에 따른 텍스트 마이닝을 통해 정치적/사회적 상황의 분석이나 상황이 일어난 뒤의 감성 상태의 변화와 사회적 이벤트(e.g 대통령 선거, 총선, 부동산경기, 증시등락 등) 발생의 예측이 가능.</p>
             </div>
         </div>
@@ -225,7 +158,7 @@
                                             <div id="left_btn_list" class="col-md-6 text-center">
                                                 <div class="col-md-6">
                                                     <button type="button" class="btn btn-primary btn-block" onclick="left_all_select();">
-                                                        <span class="glyphicon glyphicon-ok"></span>&nbsp;전체 선택
+                                                        <span class="glyphicon glyphicon-check"></span>&nbsp;전체 선택
                                                     </button>
                                                 </div>
                                                 <div class="col-md-6">
@@ -233,7 +166,7 @@
                                                         <span class="glyphicon glyphicon-erase"></span>&nbsp;전체 해제
                                                     </button>
                                                 </div>
-                                                <br>
+                                                <div class="col-md-12"><hr style="margin-top: 10px; margin-bottom: 10px;"></div>
                                                 <script>
                                                     button_generate("left_btn_list", {{ left_select|tojson|safe }});
                                                 </script>
@@ -242,7 +175,7 @@
                                             <div id="right_btn_list" class="col-md-6 text-center">
                                                 <div class="col-md-6">
                                                     <button type="button" class="btn btn-primary btn-block" onclick="right_all_select();">
-                                                        <span class="glyphicon glyphicon-ok"></span>&nbsp;전체 선택
+                                                        <span class="glyphicon glyphicon-check"></span>&nbsp;전체 선택
                                                     </button>
                                                 </div>
                                                 <div class="col-md-6">
@@ -250,7 +183,7 @@
                                                         <span class="glyphicon glyphicon-erase"></span>&nbsp;전체 해제
                                                     </button>
                                                 </div>
-                                                <br>
+                                                <div class="col-md-12"><hr style="margin-top: 10px; margin-bottom: 10px;"></div>
                                                 <script>
                                                     button_generate("right_btn_list", {{ right_select|tojson|safe }});
                                                 </script>
@@ -262,7 +195,6 @@
 
                                         <!-- 취소할 경우 모두 원래대로 -->
                                         <input type="reset" class="btn btn-default" data-dismiss="modal" value="취소">
-                                        
                                         <script>
                                             $('.modal').on('hidden.bs.modal', function(){
                                                 $(this).find('form')[0].reset();
@@ -387,20 +319,6 @@
             </div>
         </div>
 
-        <!-- Page Content -->
-        <div class="container">
-            <!-- Introduction Row -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">2-Dim Projection</h1>
-                    <p>정치적 진영별 SNS 텍스트 마이닝을 통해 정치적 상황에 따른 진영별 감정 상태 변화를 분석하는 모델을 개발하고 분석 및 시각화 도구 개발.</p>
-                    <p>정치인들이 많이 활동하는 SNS인 Twitter에 대한 분석.</p>
-                    <p>정치적 진영에 따른 텍스트 마이닝을 통해 정치적/사회적 상황의 분석이나 상황이 일어난 뒤의 감성 상태의 변화와 사회적 이벤트(e.g 대통령 선거, 총선, 부동산경기, 증시등락 등) 발생의 예측이 가능.</p>
-                </div>
-            </div>
-        </div>
-
-        <br>
         <hr>
 
         <!-- Footer -->
@@ -417,20 +335,66 @@
     <!-- /.container -->
 
     <script>
+        function resetHandler(){
+            var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
+                "정세균","진영","천정배","추미애","표창원"]
+            var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                 "원희룡","이준석","장제원","정우택","정진석","최경환"];
+            var num;
+            for(num=0;num<left_politician.length;num++){
+                if($("#left-ck-"+num).prop("checked")){
+                    $("#left-btn-"+num).attr('class', 'btn btn-primary btn-block');
+                    $("#left-span-"+num).attr('class', 'glyphicon glyphicon-check');
+                }
+                else{
+                    $("#left-btn-"+num).attr('class', 'btn btn-default btn-block');
+                    $("#left-span-"+num).attr('class', 'glyphicon glyphicon-unchecked');
+                }
+            }
+            for(num=0;num<right_politician.length;num++){
+                if($("#right-ck-"+num).prop("checked")){
+                    $("#right-btn-"+num).attr('class', 'btn btn-primary btn-block');
+                    $("#right-span-"+num).attr('class', 'glyphicon glyphicon-check');
+                }
+                else{
+                    $("#right-btn-"+num).attr('class', 'btn btn-default btn-block');
+                    $("#right-span-"+num).attr('class', 'glyphicon glyphicon-unchecked');
+                }
+            }
+        }
+        $('input[type="reset"]').click(function(evt) {
+            // Prevent the reset button from firing the form's reset event again
+            evt.preventDefault();
+            $(this).closest('form').get(0).reset();
+            // At this point your form's inputs should have their values reset
+            resetHandler();
+        });
+    </script>
+
+    <script>
         function l_toggle_ck(num){
             if($("#left-ck-"+num).prop("checked")){
                 document.getElementById("left-ck-"+num).checked = "";
+                $("#left-btn-"+num).attr('class', 'btn btn-default btn-block');
+                $("#left-span-"+num).attr('class', 'glyphicon glyphicon-unchecked');
             }
             else{
                 document.getElementById("left-ck-"+num).checked = "checked";
+                $("#left-btn-"+num).attr('class', 'btn btn-primary btn-block');
+                $("#left-span-"+num).attr('class', 'glyphicon glyphicon-check');
             }
         }
         function r_toggle_ck(num){
             if($("#right-ck-"+num).prop("checked")){
                 document.getElementById("right-ck-"+num).checked = "";
+                $("#right-btn-"+num).attr('class', 'btn btn-default btn-block');
+                $("#right-span-"+num).attr('class', 'glyphicon glyphicon-unchecked');
             }
             else{
                 document.getElementById("right-ck-"+num).checked = "checked";
+                $("#right-btn-"+num).attr('class', 'btn btn-primary btn-block');
+                $("#right-span-"+num).attr('class', 'glyphicon glyphicon-check');
             }
         }
     </script>
@@ -439,6 +403,16 @@
         function left_all_select(){
             $('input:checkbox[name="left_btn_list-ck"]').each(function() {
                 this.checked = true; //checked 처리
+                var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                    "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
+                    "정세균","진영","천정배","추미애","표창원"]
+                var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                     "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                var num;
+                for(num=0;num<left_politician.length;num++){
+                    $("#left-btn-"+num).attr('class', 'btn btn-primary btn-block');
+                    $("#left-span-"+num).attr('class', 'glyphicon glyphicon-check');
+                }
             });
         }
     </script>
@@ -446,6 +420,16 @@
         function right_all_select(){
             $('input:checkbox[name="right_btn_list-ck"]').each(function() {
                 this.checked = true; //checked 처리
+                var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                    "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
+                    "정세균","진영","천정배","추미애","표창원"]
+                var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                     "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                var num;
+                for(num=0;num<right_politician.length;num++){
+                    $("#right-btn-"+num).attr('class', 'btn btn-primary btn-block');
+                    $("#right-span-"+num).attr('class', 'glyphicon glyphicon-check');
+                }
             });
         }
     </script>
@@ -454,6 +438,16 @@
         function left_all_unselect(){
             $('input:checkbox[name="left_btn_list-ck"]').each(function() {
                 this.checked = false; //unchecked 처리
+                var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                    "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
+                    "정세균","진영","천정배","추미애","표창원"]
+                var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                     "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                var num;
+                for(num=0;num<left_politician.length;num++){
+                    $("#left-btn-"+num).attr('class', 'btn btn-default btn-block');
+                    $("#left-span-"+num).attr('class', 'glyphicon glyphicon-unchecked');
+                }
             });
         }
     </script>
@@ -461,6 +455,16 @@
         function right_all_unselect(){
             $('input:checkbox[name="right_btn_list-ck"]').each(function() {
                 this.checked = false; //unchecked 처리
+                var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                    "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
+                    "정세균","진영","천정배","추미애","표창원"]
+                var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                     "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                var num;
+                for(num=0;num<right_politician.length;num++){
+                    $("#right-btn-"+num).attr('class', 'btn btn-default btn-block');
+                    $("#right-span-"+num).attr('class', 'glyphicon glyphicon-unchecked');
+                }
             });
         }
     </script>
