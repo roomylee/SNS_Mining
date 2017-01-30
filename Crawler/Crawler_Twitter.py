@@ -102,6 +102,7 @@ def collect_repost(query, inclination):
 
             content = content.replace("'", "''")
 
+            # retweet은 사용하지 않게 됨. 주석처리
             if hasattr(post, 'retweeted_status'):
                 # # origin : 원본에 대한 정보
                 # origin_id = post.author.id
@@ -121,6 +122,7 @@ def collect_repost(query, inclination):
                 origin_screen_name = post.in_reply_to_screen_name
                 origin_url = post.in_reply_to_status_id
 
+                # reply가 아닌 것들은 continue
                 if "@%s" % origin_screen_name != query:
                     continue
                 if origin_url == None:
@@ -137,12 +139,14 @@ def collect_repost(query, inclination):
 
         # Tweepy API Interval
         except tweepy.TweepError:
+            # Tweepy API 제한에 대한 딜레이 처리
             print("Waits...")
             time.sleep(60 * 15 + 1)
             print("Wake up!")
             continue
 
         except mysql.connector.errors.ProgrammingError:
+            # 쿼리가 죽었을 때 처리
             print("MySQL Programming ERROR")
             print("Query: %s" % insert_qry)
             continue
@@ -164,13 +168,8 @@ if __name__ == '__main__':
         id = row['Twitter_ID']
         inclination = row['Inclination']
 
-        # if name == "김진표":
-        #     flag = True
-        # if flag != True:
-        #     continue
-
         print("Crawling %s's tweet..." % name)
-        # collect_tweet(id, inclination)
+        collect_tweet(id, inclination)
         print("Complete Crawling %s's tweet!" % name)
 
         print("Crawling Repost(Retweet/Reply) to %s's tweet" % name)

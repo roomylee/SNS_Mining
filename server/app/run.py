@@ -9,7 +9,7 @@ import numpy as np
 app = Flask(__name__)
 ***REMOVED***
 
-
+# 정치인 리스트 및 딕셔너리
 politician_dic={"김부겸":"hopekbk", "김성식":"okkimss", "김진표":"jinpyo_kim",
           "문재인":"moonriver365", "민병두":"bdmin1958", "박범계":"bkfire1004",
           "박영선":"Park_Youngsun", "박원순":"wonsoonpark", "박지원":"jwp615",
@@ -41,14 +41,18 @@ right_Screen_Name = ["kimmoosung","jtkim1013","Nakw","yesKP","scw0403",
 left_select = left_politician
 right_select = right_politician
 
+
 def make_Screen_Name_list(people_list):
     result_list = []
     for one in people_list:
         result_list.append(politician_dic[one])
     return result_list
 
+
+# 메인 페이지 라우팅
 @app.route('/')
 def main():
+    # 진보 진영의 워드클라우드 생성
     left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency", "left_reply_frequency"])
     avg = np.mean(list(zip(*left_word))[1])
     taglist = pytagcloud.make_tags(left_word[:100],
@@ -57,6 +61,7 @@ def main():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Left done!")
 
+    # 보수 진영의 워드클라우드 생성
     right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency", "right_reply_frequency"])
     avg = np.mean(list(zip(*right_word))[1])
     taglist = pytagcloud.make_tags(right_word[:100],
@@ -65,13 +70,16 @@ def main():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
+    # 통합 버전 html 파일로 실행
     return render_template('integration.html',
                            left_freq=left_word, right_freq=right_word,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
 
+# 정치인 작성 트윗 라우팅
 @app.route('/tweet')
 def tweet():
+    # 진보 진영 워드클라우드 생성
     left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency"])
     avg = np.mean(list(zip(*left_word))[1])
     taglist = pytagcloud.make_tags(left_word[:100],
@@ -80,6 +88,7 @@ def tweet():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Left done!")
 
+    # 보수 진영 워드클라우드 생성
     right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency"])
     avg = np.mean(list(zip(*right_word))[1])
     taglist = pytagcloud.make_tags(right_word[:100],
@@ -88,13 +97,16 @@ def tweet():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
+    # 트윗에 대한 html 파일로 실행
     return render_template('tweet.html',
                            left_freq=left_word, right_freq=right_word,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
 
+# 답글 라우팅
 @app.route('/reply')
 def reply():
+    # 진보 워드클라우드
     left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_reply_frequency"])
     avg = np.mean(list(zip(*left_word))[1])
     taglist = pytagcloud.make_tags(left_word[:100],
@@ -103,6 +115,7 @@ def reply():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Left done!")
 
+    # 보수 워드클라우드
     right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_reply_frequency"])
     avg = np.mean(list(zip(*right_word))[1])
     taglist = pytagcloud.make_tags(right_word[:100],
@@ -117,6 +130,7 @@ def reply():
                            right_select=json.dumps(right_select))
 
 
+# 체크박스에 대한 ajax처리, 선택한 정치인에 대한 정보 받아옴.
 @app.route('/checkbox', methods=["GET", "POST"])
 def check_box():
     if request.method == 'POST':
@@ -125,5 +139,6 @@ def check_box():
         right_select = request.json["right"]
     return str(request.json);
 
-if __name__ == '__main__':
+# 실행행
+if __nme__ == '__main__':
     app.run()
