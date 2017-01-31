@@ -10,7 +10,7 @@ app = Flask(__name__)
 ***REMOVED***
 
 # 정치인 리스트 및 딕셔너리
-politician_dic={"김부겸":"hopekbk", "김성식":"okkimss", "김진표":"jinpyo_kim",
+politician_dic={"김부겸":"hopekbk", "김성식":"okkimss", "김진표":"jinpyokim",
           "문재인":"moonriver365", "민병두":"bdmin1958", "박범계":"bkfire1004",
           "박영선":"Park_Youngsun", "박원순":"wonsoonpark", "박지원":"jwp615",
           "송영길":"Bulloger", "안철수":"cheolsoo0919", "안희정":"steelroot",
@@ -56,7 +56,7 @@ def main():
     left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency", "left_reply_frequency"])
     avg = np.mean(list(zip(*left_word))[1])
     taglist = pytagcloud.make_tags(left_word[:100],
-                                   maxsize=12 * (left_word[0][1] - avg) / (avg - left_word[99][1]))
+                                   maxsize=20 * (left_word[0][1] - (avg)+1) / (avg))
     pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400),
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Left done!")
@@ -65,7 +65,7 @@ def main():
     right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency", "right_reply_frequency"])
     avg = np.mean(list(zip(*right_word))[1])
     taglist = pytagcloud.make_tags(right_word[:100],
-                                   maxsize=12 * (right_word[0][1] - avg) / (avg - right_word[99][1]))
+                                   maxsize=20 * (right_word[0][1] - (avg)+1) / (avg))
     pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400),
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
@@ -83,7 +83,7 @@ def tweet():
     left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency"])
     avg = np.mean(list(zip(*left_word))[1])
     taglist = pytagcloud.make_tags(left_word[:100],
-                                   maxsize=12 * (left_word[0][1] - avg) / (avg - left_word[99][1]))
+                                   maxsize=20 * (left_word[0][1] - (avg)+1) / (avg))
     pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400),
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Left done!")
@@ -92,7 +92,7 @@ def tweet():
     right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency"])
     avg = np.mean(list(zip(*right_word))[1])
     taglist = pytagcloud.make_tags(right_word[:100],
-                                   maxsize=12 * (right_word[0][1] - avg) / (avg - right_word[99][1]))
+                                   maxsize=20 * (right_word[0][1] - (avg)+1) / (avg))
     pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400),
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
@@ -110,7 +110,7 @@ def reply():
     left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_reply_frequency"])
     avg = np.mean(list(zip(*left_word))[1])
     taglist = pytagcloud.make_tags(left_word[:100],
-                                   maxsize=12 * (left_word[0][1] - avg) / (avg - left_word[99][1]))
+                                   maxsize=20 * (left_word[0][1] - (avg)+1) / (avg))
     pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400),
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Left done!")
@@ -119,7 +119,7 @@ def reply():
     right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_reply_frequency"])
     avg = np.mean(list(zip(*right_word))[1])
     taglist = pytagcloud.make_tags(right_word[:100],
-                                   maxsize=12 * (right_word[0][1] - avg) / (avg - right_word[99][1]))
+                                   maxsize=20 * (right_word[0][1] - (avg)+1) / (avg))
     pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400),
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
@@ -139,6 +139,6 @@ def check_box():
         right_select = request.json["right"]
     return str(request.json);
 
-# 실행행
-if __nme__ == '__main__':
+# 실행
+if __name__ == '__main__':
     app.run()
