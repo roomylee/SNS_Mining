@@ -141,4 +141,4 @@ def check_box():
 
 # 실행
 if __name__ == '__main__':
-    app.run()
+    app.run(host="166.104.140.76")
