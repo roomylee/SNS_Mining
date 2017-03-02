@@ -15,7 +15,7 @@ qry2 = conn2.cursor(buffered=True)
 
 nlp = NLP_Engine()
 
-qry.execute("select * from politician where Inclination=1")
+qry.execute("select * from politician where Inclination=2 and Screen_Name='jinpyokim'")
 row = qry.fetchone()
 while row is not None:
     qry2.execute("SELECT Contents FROM twitter_reply WHERE Origin_Screen_Name='%s'" % row[1])
@@ -25,7 +25,7 @@ while row is not None:
     while row2 is not None:
         result = nlp.ExtractPOS(row2[0], 3)
         for word, pos in result:
-            if pos in list(['Noun', 'Vern', 'Adjective', 'Adverb']):
+            if pos in list(['Noun', 'Adjective', 'Adverb']):
                 word_list.append(word)
             else:
                 continue
@@ -35,7 +35,7 @@ while row is not None:
     word_freq = Counter(word_list)
     word_freq = word_freq.most_common()
     for tpl in word_freq:
-        qry2.execute("INSERT INTO right_reply_frequency VALUE('%s', '%s', %d);" % (row[1], tpl[0], tpl[1]))
+        qry2.execute("INSERT INTO left_reply_frequency VALUE('%s', '%s', %d);" % (row[1], tpl[0], tpl[1]))
     conn2.commit()
 
     print("%s is Done!" % row[1])

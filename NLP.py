@@ -87,7 +87,7 @@ def extract_frequent_words(mysql_query, is_repost=None):
     for text in twitter_df['Contents']:
         result = nlp.ExtractPOS(text, Twitter)
         for word, pos in result:
-            if pos in list(['Noun', 'Vern', 'Adjective', 'Adverb']):
+            if pos in list(['Noun', 'Adjective', 'Adverb']):
                 word_list.append(word)
             else:
                 continue
