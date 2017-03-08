@@ -25,7 +25,7 @@ while row is not None:
     while row2 is not None:
         result = nlp.ExtractPOS(row2[0], 3)
         for word, pos in result:
-            if pos in list(['Noun', 'Adjective', 'Adverb']):
+            if pos in list(['Noun', 'Verb', 'Adjective', 'Adverb']):
                 word_list.append(word)
             else:
                 continue

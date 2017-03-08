@@ -38,14 +38,14 @@ def vectorize(vocab):
 
 
 def pca_projection(word2vec):
-    pca = PCA(n_components=2)
+    pca = PCA(n_components=3)
 
     pca.fit(word2vec)
     projected_vec = pca.transform(word2vec)
 
     result = list()
     for vec in projected_vec:
-        result.append([format(vec[0], '.1f'), format(vec[1], '.1f')])
+        result.append([format(vec[0], '.4f'), format(vec[1], '.4f'), format(vec[2], '.4f')])
 
     return result
 

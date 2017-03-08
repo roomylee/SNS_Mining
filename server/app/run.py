@@ -5,6 +5,7 @@ import json
 import pytagcloud
 from NLP import *
 import numpy as np
+from word2vec import word2vec_module
 
 app = Flask(__name__)
 ***REMOVED***
@@ -70,9 +71,32 @@ def main():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
+    left_vec = word2vec_module.vectorize(left_word)
+    left_vec = word2vec_module.pca_projection(left_vec)
+    right_vec = word2vec_module.vectorize(right_word)
+    right_vec = word2vec_module.pca_projection(right_vec)
+
+    left_data = '['
+    for idx in range(len(left_vec)):
+        if idx!=0:
+            left_data += ","
+        left_data += "{name:'진보',word:'%s',x:%s,y:%s,z:%s}"\
+                     % (left_word[idx][0], left_vec[idx][0], left_vec[idx][1], left_vec[idx][2])
+    left_data += ']'
+
+    right_data = '['
+    for idx in range(len(right_vec)):
+        if idx != 0:
+            right_data += ","
+        right_data += "{name:'보수',word:'%s',x:%s,y:%s,z:%s}" \
+                     % (right_word[idx][0], right_vec[idx][0], right_vec[idx][1], right_vec[idx][2])
+    right_data += ']'
+
+
     # 통합 버전 html 파일로 실행
     return render_template('integration.html',
                            left_freq=left_word, right_freq=right_word,
+                           left_data=left_data, right_data=right_data,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
 
@@ -97,9 +121,31 @@ def tweet():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
+    left_vec = word2vec_module.vectorize(left_word)
+    left_vec = word2vec_module.pca_projection(left_vec)
+    right_vec = word2vec_module.vectorize(right_word)
+    right_vec = word2vec_module.pca_projection(right_vec)
+
+    left_data = '['
+    for idx in range(len(left_vec)):
+        if idx != 0:
+            left_data += ","
+        left_data += "{name:'진보',word:'%s',x:%s,y:%s,z:%s}" \
+                     % (left_word[idx][0], left_vec[idx][0], left_vec[idx][1], left_vec[idx][2])
+    left_data += ']'
+
+    right_data = '['
+    for idx in range(len(right_vec)):
+        if idx != 0:
+            right_data += ","
+        right_data += "{name:'보수',word:'%s',x:%s,y:%s,z:%s}" \
+                      % (right_word[idx][0], right_vec[idx][0], right_vec[idx][1], right_vec[idx][2])
+    right_data += ']'
+
     # 트윗에 대한 html 파일로 실행
     return render_template('tweet.html',
                            left_freq=left_word, right_freq=right_word,
+                           left_vec=left_data, right_vec=right_data,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
 
@@ -124,8 +170,30 @@ def reply():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
+    left_vec = word2vec_module.vectorize(left_word)
+    left_vec = word2vec_module.pca_projection(left_vec)
+    right_vec = word2vec_module.vectorize(right_word)
+    right_vec = word2vec_module.pca_projection(right_vec)
+
+    left_data = '['
+    for idx in range(len(left_vec)):
+        if idx != 0:
+            left_data += ","
+        left_data += "{name:'진보',word:'%s',x:%s,y:%s,z:%s}" \
+                     % (left_word[idx][0], left_vec[idx][0], left_vec[idx][1], left_vec[idx][2])
+    left_data += ']'
+
+    right_data = '['
+    for idx in range(len(right_vec)):
+        if idx != 0:
+            right_data += ","
+        right_data += "{name:'보수',word:'%s',x:%s,y:%s,z:%s}" \
+                      % (right_word[idx][0], right_vec[idx][0], right_vec[idx][1], right_vec[idx][2])
+    right_data += ']'
+
     return render_template('reply.html',
                            left_freq=left_word, right_freq=right_word,
+                           left_vec=left_data, right_vec=right_data,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
 
@@ -141,4 +209,4 @@ def check_box():
 
 # 실행
 if __name__ == '__main__':
-    app.run(host="166.104.140.76")
+    app.run()
