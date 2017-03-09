@@ -142,10 +142,11 @@ def tweet():
                       % (right_word[idx][0], right_vec[idx][0], right_vec[idx][1], right_vec[idx][2])
     right_data += ']'
 
+
     # 트윗에 대한 html 파일로 실행
     return render_template('tweet.html',
                            left_freq=left_word, right_freq=right_word,
-                           left_vec=left_data, right_vec=right_data,
+                           left_data=left_data, right_data=right_data,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
 
@@ -193,7 +194,7 @@ def reply():
 
     return render_template('reply.html',
                            left_freq=left_word, right_freq=right_word,
-                           left_vec=left_data, right_vec=right_data,
+                           left_data=left_data, right_data=right_data,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
 
