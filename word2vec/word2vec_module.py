@@ -25,7 +25,7 @@ def make_model():
             print(e)
             continue
 
-    model = gensim.models.Word2Vec(train_docs)
+    model = gensim.models.Word2Vec(train_docs, size=3)
 
     model.save('wv.model')
 

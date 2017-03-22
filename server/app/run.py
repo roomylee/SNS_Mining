@@ -72,9 +72,9 @@ def main():
     print("Right done!")
 
     left_vec = word2vec_module.vectorize(left_word)
-    left_vec = word2vec_module.pca_projection(left_vec)
+    #left_vec = word2vec_module.pca_projection(left_vec)
     right_vec = word2vec_module.vectorize(right_word)
-    right_vec = word2vec_module.pca_projection(right_vec)
+    #right_vec = word2vec_module.pca_projection(right_vec)
 
     left_data = '['
     for idx in range(len(left_vec)):
@@ -122,9 +122,9 @@ def tweet():
     print("Right done!")
 
     left_vec = word2vec_module.vectorize(left_word)
-    left_vec = word2vec_module.pca_projection(left_vec)
+    #left_vec = word2vec_module.pca_projection(left_vec)
     right_vec = word2vec_module.vectorize(right_word)
-    right_vec = word2vec_module.pca_projection(right_vec)
+    #right_vec = word2vec_module.pca_projection(right_vec)
 
     left_data = '['
     for idx in range(len(left_vec)):
@@ -172,9 +172,9 @@ def reply():
     print("Right done!")
 
     left_vec = word2vec_module.vectorize(left_word)
-    left_vec = word2vec_module.pca_projection(left_vec)
+    #left_vec = word2vec_module.pca_projection(left_vec)
     right_vec = word2vec_module.vectorize(right_word)
-    right_vec = word2vec_module.pca_projection(right_vec)
+    #right_vec = word2vec_module.pca_projection(right_vec)
 
     left_data = '['
     for idx in range(len(left_vec)):
