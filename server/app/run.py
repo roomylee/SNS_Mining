@@ -74,10 +74,10 @@ def main():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
-    left_vec = word2vec_module.vectorize(left_word)
-    #left_vec = word2vec_module.pca_projection(left_vec)
-    right_vec = word2vec_module.vectorize(right_word)
-    #right_vec = word2vec_module.pca_projection(right_vec)
+    left_vec = vectorize(left_word)
+    #left_vec = pca_projection(left_vec)
+    right_vec = vectorize(right_word)
+    #right_vec = pca_projection(right_vec)
 
     left_data = '['
     for idx in range(len(left_vec)):
@@ -122,10 +122,10 @@ def tweet():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
-    left_vec = word2vec_module.vectorize(left_word)
-    #left_vec = word2vec_module.pca_projection(left_vec)
-    right_vec = word2vec_module.vectorize(right_word)
-    #right_vec = word2vec_module.pca_projection(right_vec)
+    left_vec = vectorize(left_word)
+    #left_vec = pca_projection(left_vec)
+    right_vec = vectorize(right_word)
+    #right_vec = pca_projection(right_vec)
 
     left_data = '['
     for idx in range(len(left_vec)):
@@ -172,10 +172,10 @@ def reply():
                                 fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("Right done!")
 
-    left_vec = word2vec_module.vectorize(left_word)
-    #left_vec = word2vec_module.pca_projection(left_vec)
-    right_vec = word2vec_module.vectorize(right_word)
-    #right_vec = word2vec_module.pca_projection(right_vec)
+    left_vec = vectorize(left_word)
+    #left_vec = pca_projection(left_vec)
+    right_vec = vectorize(right_word)
+    #right_vec = pca_projection(right_vec)
 
     left_data = '['
     for idx in range(len(left_vec)):
