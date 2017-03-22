@@ -1,0 +1,4 @@
+ * Running on http://166.104.140.76:50000/ (Press CTRL+C to quit)
+166.104.143.47 - - [22/Mar/2017 20:55:54] "GET / HTTP/1.1" 200 -
+166.104.143.47 - - [22/Mar/2017 20:55:54] "GET /static/img/wordcloud_left.jpg?dummy=1490183753789 HTTP/1.1" 200 -
+166.104.143.47 - - [22/Mar/2017 20:55:54] "GET /static/img/wordcloud_right.jpg?dummy=1490183753858 HTTP/1.1" 200 -

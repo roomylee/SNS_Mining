@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+
 from flask import Flask, render_template, request, jsonify
 from sqlalchemy import create_engine
 import json
 import pytagcloud
 from NLP import *
 import numpy as np
-from word2vec import word2vec_module
+import word2vec_module
 
 app = Flask(__name__)
 ***REMOVED***
@@ -80,16 +81,14 @@ def main():
     for idx in range(len(left_vec)):
         if idx!=0:
             left_data += ","
-        left_data += "{name:'진보',word:'%s',x:%s,y:%s,z:%s}"\
-                     % (left_word[idx][0], left_vec[idx][0], left_vec[idx][1], left_vec[idx][2])
+        left_data += "{name:'진보',word:'%s',x:%s,y:%s,z:%s}" % (left_word[idx][0], left_vec[idx][0], left_vec[idx][1], left_vec[idx][2])
     left_data += ']'
 
     right_data = '['
     for idx in range(len(right_vec)):
         if idx != 0:
             right_data += ","
-        right_data += "{name:'보수',word:'%s',x:%s,y:%s,z:%s}" \
-                     % (right_word[idx][0], right_vec[idx][0], right_vec[idx][1], right_vec[idx][2])
+        right_data += "{name:'보수',word:'%s',x:%s,y:%s,z:%s}" % (right_word[idx][0], right_vec[idx][0], right_vec[idx][1], right_vec[idx][2])
     right_data += ']'
 
 
@@ -210,4 +209,4 @@ def check_box():
 
 # 실행
 if __name__ == '__main__':
-    app.run()
+    app.run(host="166.104.140.76", port=50000)
