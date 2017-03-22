@@ -52,12 +52,20 @@ def collect_tweet(id, inclination):
             content = content.replace("'","''")
 
             # INSERT Query 생성
-            insert_qry = "INSERT IGNORE INTO twitter_tweet VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d)" \
+            insert_qry = "INSERT INTO twitter_tweet VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d)" \
                         % (id, screen_name, inclination, date, url, content, favorite, retweet)
 
             # INSERT Query 실행
-            qry.execute(insert_qry)
-            conn.commit()
+            try:
+                qry.execute(insert_qry)
+                ########################
+                # frequecy DB에 insert #
+                ########################
+                conn.commit()
+            except Exception as e:
+                print(e)
+                print(screen_name, url, content)
+                break
 
         # Tweepy API Interval
         except tweepy.TweepError:
@@ -134,8 +142,16 @@ def collect_repost(query, inclination):
 
             # INSERT Query 실행
             count += 1
-            qry.execute(insert_qry)
-            conn.commit()
+            try:
+                qry.execute(insert_qry)
+                ########################
+                # frequecy DB에 insert #
+                ########################
+                conn.commit()
+            except Exception as e:
+                print(e)
+                print(screen_name, url, content)
+                break
 
         # Tweepy API Interval
         except tweepy.TweepError:
