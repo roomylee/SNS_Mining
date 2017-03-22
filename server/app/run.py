@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import sys
+sys.path.insert(0, '../../')
+
 from flask import Flask, render_template, request, jsonify
 from sqlalchemy import create_engine
 import json
 import pytagcloud
 from NLP import *
-import numpy as np
-import word2vec_module
+from word2vec.word2vec_module import *
 
 app = Flask(__name__)
 ***REMOVED***
