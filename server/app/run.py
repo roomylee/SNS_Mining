@@ -14,34 +14,53 @@ app = Flask(__name__)
 ***REMOVED***
 
 # 정치인 리스트 및 딕셔너리
-politician_dic={"김부겸":"hopekbk", "김성식":"okkimss", "김진표":"jinpyokim",
-          "문재인":"moonriver365", "민병두":"bdmin1958", "박범계":"bkfire1004",
-          "박영선":"Park_Youngsun", "박원순":"wonsoonpark", "박지원":"jwp615",
-          "송영길":"Bulloger", "안철수":"cheolsoo0919", "안희정":"steelroot",
-          "이재명":"Jaemyung_Lee","정동영":"coreacdy","정세균":"sk0926",
-          "진영":"Chinyoung0413", "천정배":"jb_1000", "추미애":"choomiae",
-          "표창원":"DrPyo",
-          "김무성":"kimmoosung","김진태":"jtkim1013","나경원":"Nakw",
-          "남경필":"yesKP","서청원":"scw0403","심재철":"cleanshim",
-          "원유철":"won6767","원희룡":"wonheeryong","이준석":"junseokandylee",
-          "장제원":"Changjewon","정우택":"bigwtc","정진석":"js0904",
-          "최경환":"khwanchoi"}
+politician_dic={
+    "김부겸":"hopekbk", "김성식":"okkimss", "김진표":"jinpyokim",
+    "문재인":"moonriver365", "민병두":"bdmin1958", "박범계":"bkfire1004",
+    "박영선":"Park_Youngsun", "박원순":"wonsoonpark", "박지원":"jwp615",
+    "송영길":"Bulloger", "안철수":"cheolsoo0919", "안희정":"steelroot",
+    "이재명":"Jaemyung_Lee","정동영":"coreacdy","정세균":"sk0926",
+    "진영":"Chinyoung0413", "천정배":"jb_1000", "추미애":"choomiae",
+    "표창원":"DrPyo", "김경진":"2016kimkj", "주승용":"joo350",
+    "안민석":"eduhimang", "이정미":"jinbo27", "박주민":"yoeman6310",
+    "심상정":"sangjungsim", "김한길":"hangillo",
+    "김무성":"kimmoosung","김진태":"jtkim1013","나경원":"Nakw",
+    "남경필":"yesKP","서청원":"scw0403","심재철":"cleanshim",
+    "원유철":"won6767","원희룡":"wonheeryong","이준석":"junseokandylee",
+    "장제원":"Changjewon","정우택":"bigwtc","정진석":"js0904",
+    "최경환":"khwanchoi", "주호영":"sangtoil", "하태경":"taekyungh",
+    "이완영":"yiwy57", "유승민":"yooseongmin2017", "황영철":"hhhyc",
+    "김문수":"kimmoonsoo1", "이혜훈":"leehyehoon", "정병국":"withbg",
+    "이종구":"lee_jongkoo"
+}
+left_politician = [
+    "김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+    "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
+    "정세균","진영","천정배","추미애","표창원", "김경진", "주승용",
+    "안민석","이정미","박주민","심상정","김한길"
+]
+left_Screen_Name = [
+    "hopekbk", "okkimss", "jinpyo_kim", "moonriver365",
+    "bdmin1958", "bkfire1004", "Park_Youngsun", "wonsoonpark",
+    "jwp615", "Bulloger", "cheolsoo0919", "steelroot",
+    "Jaemyung_Lee","coreacdy","sk0926", "Chinyoung0413",
+    "jb_1000", "choomiae", "DrPyo", "2016kimkj", "joo350",
+    "eduhimang","jinbo27","yoeman6310","sangjungsim","hangillo"
+]
 
-left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
-                "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
-                "정세균","진영","천정배","추미애","표창원"]
-left_Screen_Name = ["hopekbk", "okkimss", "jinpyo_kim", "moonriver365",
-                    "bdmin1958", "bkfire1004", "Park_Youngsun", "wonsoonpark",
-                    "jwp615", "Bulloger", "cheolsoo0919", "steelroot",
-                    "Jaemyung_Lee","coreacdy","sk0926", "Chinyoung0413",
-                    "jb_1000", "choomiae", "DrPyo"]
-
-right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
-                 "원희룡","이준석","장제원","정우택","정진석","최경환"]
-right_Screen_Name = ["kimmoosung","jtkim1013","Nakw","yesKP","scw0403",
-                    "cleanshim","won6767","wonheeryong","junseokandylee",
-                    "Changjewon","bigwtc","js0904","khwanchoi"]
-
+right_politician = [
+    "김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+    "원희룡","이준석","장제원","정우택","정진석","최경환","주호영",
+    "하태경","이완영","유승민","황영철","김문수","이혜훈","정병국",
+    "이종구"
+]
+right_Screen_Name = [
+    "kimmoosung","jtkim1013","Nakw","yesKP","scw0403",
+    "cleanshim","won6767","wonheeryong","junseokandylee",
+    "Changjewon","bigwtc","js0904","khwanchoi","sangtoil","taekyungh",
+    "yiwy57","yooseongmin2017","hhhyc","kimmoonsoo1","leehyehoon",
+    "withbg","lee_jongkoo"
+]
 left_select = left_politician
 right_select = right_politician
 
@@ -211,4 +230,5 @@ def check_box():
 
 # 실행
 if __name__ == '__main__':
-    app.run(host="166.104.140.76", port=50000)
+    app.run()
+    #app.run(host="166.104.140.76", port=50000)
