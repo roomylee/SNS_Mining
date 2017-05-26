@@ -52,7 +52,7 @@ def collect_tweet(id, inclination):
             content = content.replace("'","''")
 
             # INSERT Query 생성
-            insert_qry = "INSERT INTO twitter_tweet VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d)" \
+            insert_qry = "INSERT IGNORE INTO twitter_tweet VALUES('%s', '%s', %d, '%s', '%s', '%s', %d, %d)" \
                         % (id, screen_name, inclination, date, url, content, favorite, retweet)
 
             # INSERT Query 실행
@@ -64,7 +64,7 @@ def collect_tweet(id, inclination):
                 conn.commit()
             except Exception as e:
                 print(e)
-                print(screen_name, url, content)
+                print(insert_qry)
                 break
 
         # Tweepy API Interval
@@ -87,7 +87,7 @@ def collect_tweet(id, inclination):
 # twitter_retweet 또는 twitter_reply DB에 저장
 def collect_repost(query, inclination):
     # tweepy.Cursor를 통해서 타임라인 게시글 탐색
-    cursor = tweepy.Cursor(api.search, q=query).items(500)
+    cursor = tweepy.Cursor(api.search, q=query).items()
 
     count = 0
     while True:
@@ -150,7 +150,7 @@ def collect_repost(query, inclination):
                 conn.commit()
             except Exception as e:
                 print(e)
-                print(screen_name, url, content)
+                print(insert_qry)
                 break
 
         # Tweepy API Interval

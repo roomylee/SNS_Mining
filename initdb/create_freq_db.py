@@ -15,7 +15,7 @@ qry2 = conn2.cursor(buffered=True)
 
 nlp = NLP_Engine()
 
-qry.execute("select * from politician where Inclination=2 and Screen_Name='jinpyokim'")
+qry.execute("select * from politician where Inclination=2")
 row = qry.fetchone()
 while row is not None:
     qry2.execute("SELECT Contents FROM twitter_reply WHERE Origin_Screen_Name='%s'" % row[1])
@@ -23,9 +23,13 @@ while row is not None:
 
     word_list = list()
     while row2 is not None:
-        result = nlp.ExtractPOS(row2[0], 3)
+        result = nlp.ExtractPOS(row2[0])
         for word, pos in result:
             if pos in list(['Noun', 'Verb', 'Adjective', 'Adverb']):
+                if word not in ['꼭','더'] and len(word) < 2:
+                    continue
+                elif word in ['하다','있다','이다','되다','가다','않다','없다','오다','자다','말다','대다','돼다']:
+                    continue
                 word_list.append(word)
             else:
                 continue

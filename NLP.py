@@ -9,14 +9,14 @@ from collections import Counter
 class NLP_Engine:
     def __init__(self):
         #self.engines = [Kkma(), Hannanum(), Mecab(), Twitter()]
-        self.engines = [Kkma(), Hannanum(), None, Twitter()]
+        self.engines = Twitter()
 
-    def ExtractNoun(self, sentence, eng):
-        noun = self.engines[eng].nouns(sentence)
+    def ExtractNoun(self, sentence):
+        noun = self.engines.nouns(sentence)
         return noun
 
-    def ExtractPOS(self, sentence, eng):
-        POS = self.engines[eng].pos(sentence, norm=True, stem=True)
+    def ExtractPOS(self, sentence):
+        POS = self.engines.pos(sentence, norm=True, stem=True)
         return POS
 
 def get_frequent_words(people_list, table_list):
@@ -85,7 +85,7 @@ def extract_frequent_words(mysql_query, is_repost=None):
     nlp = NLP_Engine()
     word_list = list()
     for text in twitter_df['Contents']:
-        result = nlp.ExtractPOS(text, Twitter)
+        result = nlp.ExtractPOS(text)
         for word, pos in result:
             if pos in list(['Noun', 'Verb', 'Adjective', 'Adverb']):
                 word_list.append(word)
