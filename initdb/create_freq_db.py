@@ -28,7 +28,9 @@ while row is not None:
             if pos in list(['Noun', 'Verb', 'Adjective', 'Adverb']):
                 if word not in ['꼭','더'] and len(word) < 2:
                     continue
-                elif word in ['하다','있다','이다','되다','가다','않다','없다','오다','자다','말다','대다','돼다']:
+                elif word in ['하다','있다','이다','되다','가다',
+                              '않다','없다','오다','자다','말다',
+                              '대다','돼다','되어다',]:
                     continue
                 word_list.append(word)
             else:

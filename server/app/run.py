@@ -27,7 +27,7 @@ politician_dic={
     "김무성":"kimmoosung","김진태":"jtkim1013","나경원":"Nakw",
     "남경필":"yesKP","서청원":"scw0403","심재철":"cleanshim",
     "원유철":"won6767","원희룡":"wonheeryong","이준석":"junseokandylee",
-    "장제원":"Changjewon","정우택":"bigwtc","정진석":"js0904",
+    "정우택":"bigwtc","정진석":"js0904",
     "최경환":"khwanchoi", "주호영":"sangtoil", "하태경":"taekyungh",
     "이완영":"yiwy57", "유승민":"yooseongmin2017", "황영철":"hhhyc",
     "김문수":"kimmoonsoo1", "이혜훈":"leehyehoon", "정병국":"withbg",
@@ -50,14 +50,14 @@ left_Screen_Name = [
 
 right_politician = [
     "김무성","김진태","나경원","남경필","서청원","심재철","원유철",
-    "원희룡","이준석","장제원","정우택","정진석","최경환","주호영",
+    "원희룡","이준석","정우택","정진석","최경환","주호영",
     "하태경","이완영","유승민","황영철","김문수","이혜훈","정병국",
     "이종구"
 ]
 right_Screen_Name = [
     "kimmoosung","jtkim1013","Nakw","yesKP","scw0403",
     "cleanshim","won6767","wonheeryong","junseokandylee",
-    "Changjewon","bigwtc","js0904","khwanchoi","sangtoil","taekyungh",
+    "bigwtc","js0904","khwanchoi","sangtoil","taekyungh",
     "yiwy57","yooseongmin2017","hhhyc","kimmoonsoo1","leehyehoon",
     "withbg","lee_jongkoo"
 ]
@@ -71,54 +71,99 @@ def make_Screen_Name_list(people_list):
         result_list.append(politician_dic[one])
     return result_list
 
+def make_word_cloud(word_list, file_name):
+    avg = np.mean(list(zip(*word_list))[1])
+    taglist = pytagcloud.make_tags(word_list[:100],
+                                   maxsize=20 * (word_list[0][1] - (avg) + 1) / (avg))
+    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_%s.jpg' % file_name, size=(600, 400),
+                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
+    print("%s done!" % file_name)
+
+
+def make_point_data(word_list, vec_list, inclinatation):
+    point_data = '['
+    for idx in range(len(vec_list)):
+        if idx != 0:
+            point_data += ","
+        point_data += "{name:'%s',word:'%s',x:%s,y:%s,z:%s" \
+                      % (inclinatation,word_list[idx][0], vec_list[idx][0][0], vec_list[idx][0][1], vec_list[idx][0][2])
+        for rank in range(5):
+            point_data += ",top%d:'%s'" % (rank, vec_list[idx][1][rank][0])
+        point_data += '}'
+    point_data += ']'
+
+    return point_data
+
+def extract_both_word(left_word, right_word):
+    left_dic = {}
+    both_word = []
+    new_left_word = []
+    new_right_word = []
+    for l in left_word:
+        left_dic[l[0]] = True
+
+    for r in right_word:
+        if r[0] in left_dic:
+            left_dic[r[0]] = False
+            both_word.append(r)
+        else:
+            new_right_word.append(r)
+
+    for l in left_word:
+        if left_dic[l[0]] is True:
+            new_left_word.append(l)
+
+    return new_left_word, new_right_word, both_word
+
+
 
 # 메인 페이지 라우팅
 @app.route('/')
 def main():
     # 진보 진영의 워드클라우드 생성
-    left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency", "left_reply_frequency"])
-    avg = np.mean(list(zip(*left_word))[1])
-    taglist = pytagcloud.make_tags(left_word[:100],
-                                   maxsize=20 * (left_word[0][1] - (avg)+1) / (avg))
-    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400),
-                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
-    print("Left done!")
+    left_total_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency", "left_reply_frequency"])
+    #make_word_cloud(word_list=left_word, file_name="left")
 
     # 보수 진영의 워드클라우드 생성
-    right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency", "right_reply_frequency"])
-    avg = np.mean(list(zip(*right_word))[1])
-    taglist = pytagcloud.make_tags(right_word[:100],
-                                   maxsize=20 * (right_word[0][1] - (avg)+1) / (avg))
-    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400),
-                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
-    print("Right done!")
+    right_total_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency", "right_reply_frequency"])
+    #make_word_cloud(word_list=right_word, file_name="right")
 
-    left_vec = vectorize(left_word)
-    #left_vec = pca_projection(left_vec)
-    right_vec = vectorize(right_word)
-    #right_vec = pca_projection(right_vec)
 
-    left_data = '['
-    for idx in range(len(left_vec)):
-        if idx!=0:
-            left_data += ","
-        left_data += "{name:'진보',word:'%s',x:%s,y:%s,z:%s}" % (left_word[idx][0], left_vec[idx][0], left_vec[idx][1], left_vec[idx][2])
-    left_data += ']'
+    left_word, right_word, both_word = extract_both_word(left_total_word, right_total_word)
 
-    right_data = '['
-    for idx in range(len(right_vec)):
-        if idx != 0:
-            right_data += ","
-        right_data += "{name:'보수',word:'%s',x:%s,y:%s,z:%s}" % (right_word[idx][0], right_vec[idx][0], right_vec[idx][1], right_vec[idx][2])
-    right_data += ']'
+
+
+    left_vec = vectorize(left_word, "twitter_tweet", "twitter_reply")
+    right_vec = vectorize(right_word, "twitter_tweet", "twitter_reply")
+    both_vec = vectorize(both_word, "twitter_tweet", "twitter_reply")
+
+
+    left_data = make_point_data(left_word, left_vec, "진보")
+    right_data = make_point_data(right_word, right_vec, "보수")
+    both_data = make_point_data(both_word, both_vec, "진보&보수")
+
 
 
     # 통합 버전 html 파일로 실행
     return render_template('integration.html',
-                           left_freq=left_word, right_freq=right_word,
-                           left_data=left_data, right_data=right_data,
+                           left_freq=left_total_word, right_freq=right_total_word,
+                           left_data=left_data, right_data=right_data, both_data=both_data,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # 정치인 작성 트윗 라우팅
 @app.route('/tweet')

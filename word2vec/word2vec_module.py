@@ -51,7 +51,7 @@ def make_model(db_name_1, db_name_2 = None):
                 continue
             row = qry.fetchone()
 
-    model = gensim.models.Word2Vec(train_docs, size=3)
+    model = gensim.models.Word2Vec(train_docs, size=5)
 
     if db_name_2 is None:
         model.save('%s.model' % db_name_1)
@@ -62,34 +62,34 @@ def make_model(db_name_1, db_name_2 = None):
 
 def vectorize(vocab_list, db_name_1, db_name_2 = None):
     if db_name_2 is None:
-        model = gensim.models.Word2Vec.load('%s.model' % db_name_1)
+        model = gensim.models.Word2Vec.load('../../word2vec/%s.model' % db_name_1)
     else:
-        model = gensim.models.Word2Vec.load('%s_%s.model' % (db_name_1, db_name_2))
+        model = gensim.models.Word2Vec.load('../../word2vec/%s_%s.model' % (db_name_1, db_name_2))
 
     result = list()
     for word in vocab_list:
-        result.append(model[word[0]])
+        result.append((model[word[0]], model.most_similar(word[0])))
     return result
 
 
 # Do not use
-# def pca_projection(word2vec):
-#     pca = PCA(n_components=3)
-#
-#     pca.fit(word2vec)
-#     projected_vec = pca.transform(word2vec)
-#
-#     result = list()
-#     for vec in projected_vec:
-#         result.append([format(vec[0], '.4f'), format(vec[1], '.4f'), format(vec[2], '.4f')])
-#
-#     return result
+def pca_projection(word2vec):
+    pca = PCA(n_components=3)
+
+    pca.fit(word2vec)
+    projected_vec = pca.transform(word2vec)
+
+    result = list()
+    for vec in projected_vec:
+        result.append([format(vec[0], '.4f'), format(vec[1], '.4f'), format(vec[2], '.4f')])
+
+    return result
 
 
 if __name__ == '__main__':
     print("twitter_tweet")
-    #make_model("twitter_tweet")
+    make_model("twitter_tweet")
     print("twitter_reply")
-    #make_model("twitter_reply")
+    make_model("twitter_reply")
     print("twitter_tweet & reply")
-    make_model("twitter_tweet", "twitter_tweet")
+    make_model("twitter_tweet", "twitter_reply")
