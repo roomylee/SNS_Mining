@@ -87,6 +87,9 @@ def vectorize(vocab_list, db_name_1, db_name_2 = None):
 
 
 if __name__ == '__main__':
-    make_model("twitter_tweet")
-    make_model("twitter_reply")
+    print("twitter_tweet")
+    #make_model("twitter_tweet")
+    print("twitter_reply")
+    #make_model("twitter_reply")
+    print("twitter_tweet & reply")
     make_model("twitter_tweet", "twitter_tweet")
