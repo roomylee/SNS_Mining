@@ -43,7 +43,6 @@ def make_model(db_name_1, db_name_2 = None, inclination=None):
     if db_name_2 is not None:
         if inclination is not None:
             query = "SELECT Contents FROM %s WHERE Inclination = %d" % (db_name_2, inclination)
-            print(query)
         else:
             query = "SELECT Contents FROM %s" % db_name_2
 
@@ -101,21 +100,21 @@ def pca_projection(word2vec):
 
 if __name__ == '__main__':
     print("twitter_tweet")
-    #make_model(db_name_1="twitter_tweet")
+    make_model(db_name_1="twitter_tweet")
     print("twitter_tweet_1")
     make_model(db_name_1="twitter_tweet", inclination=1)
     print("twitter_tweet_2")
     make_model(db_name_1="twitter_tweet", inclination=2)
 
     print("twitter_reply")
-    #make_model(db_name_1="twitter_reply")
+    make_model(db_name_1="twitter_reply")
     print("twitter_reply_1")
     make_model(db_name_1="twitter_reply", inclination=1)
     print("twitter_reply_2")
     make_model(db_name_1="twitter_reply", inclination=2)
 
     print("twitter_tweet & reply")
-    #make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply")
+    make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply")
     print("twitter_tweet & reply_1")
     make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply", inclination=1)
     print("twitter_tweet & reply_2")
