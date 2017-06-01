@@ -14,7 +14,7 @@ def tokenize(doc):
     return result
 
 
-def make_model(db_name_1, db_name_2 = None):
+def make_model(db_name_1, db_name_2 = None, inclination=None):
     config = {'host': ***REMOVED***,
               'port': ***REMOVED***,
               'user': ***REMOVED***,
@@ -23,7 +23,10 @@ def make_model(db_name_1, db_name_2 = None):
     conn = msc.connect(**config)
     qry = conn.cursor(buffered=True)
 
-    query = "SELECT Contents FROM %s" % db_name_1
+    if inclination is not None:
+        query = "SELECT Contents FROM %s WHERE Inclination = %d" % (db_name_1, inclination)
+    else:
+        query = "SELECT Contents FROM %s" % db_name_1
 
     qry.execute(query)
     row = qry.fetchone()
@@ -38,7 +41,11 @@ def make_model(db_name_1, db_name_2 = None):
         row = qry.fetchone()
 
     if db_name_2 is not None:
-        query = "SELECT Contents FROM %s" % db_name_2
+        if inclination is not None:
+            query = "SELECT Contents FROM %s WHERE Inclination = %d" % (db_name_2, inclination)
+            print(query)
+        else:
+            query = "SELECT Contents FROM %s" % db_name_2
 
         qry.execute(query)
         row = qry.fetchone()
@@ -54,9 +61,15 @@ def make_model(db_name_1, db_name_2 = None):
     model = gensim.models.Word2Vec(train_docs, size=3)
 
     if db_name_2 is None:
-        model.save('%s.model' % db_name_1)
+        if inclination is None:
+            model.save('%s.model' % db_name_1)
+        else:
+            model.save('%s_%d.model' % (db_name_1, inclination))
     else:
-        model.save('%s_%s.model' % (db_name_1, db_name_2))
+        if inclination is None:
+            model.save('%s_%s.model' % (db_name_1, db_name_2))
+        else:
+            model.save('%s_%s_%d.model' % (db_name_1, db_name_2, inclination))
 
 
 
@@ -88,8 +101,22 @@ def pca_projection(word2vec):
 
 if __name__ == '__main__':
     print("twitter_tweet")
-    make_model("twitter_tweet")
+    #make_model(db_name_1="twitter_tweet")
+    print("twitter_tweet_1")
+    make_model(db_name_1="twitter_tweet", inclination=1)
+    print("twitter_tweet_2")
+    make_model(db_name_1="twitter_tweet", inclination=2)
+
     print("twitter_reply")
-    make_model("twitter_reply")
+    #make_model(db_name_1="twitter_reply")
+    print("twitter_reply_1")
+    make_model(db_name_1="twitter_reply", inclination=1)
+    print("twitter_reply_2")
+    make_model(db_name_1="twitter_reply", inclination=2)
+
     print("twitter_tweet & reply")
-    make_model("twitter_tweet", "twitter_reply")
+    #make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply")
+    print("twitter_tweet & reply_1")
+    make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply", inclination=1)
+    print("twitter_tweet & reply_2")
+    make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply", inclination=2)
