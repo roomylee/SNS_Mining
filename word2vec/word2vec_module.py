@@ -80,7 +80,10 @@ def vectorize(vocab_list, db_name_1, db_name_2 = None):
 
     result = list()
     for word in vocab_list:
-        result.append((model[word[0]], model.most_similar(word[0])))
+        try:
+            result.append((model[word[0]], model.most_similar(word[0])))
+        except:
+            result.append(([0,0,0], [('error',0),('error',0),('error',0),('error',0),('error',0)]))
     return result
 
 
@@ -113,9 +116,9 @@ if __name__ == '__main__':
     print("twitter_reply_2")
     make_model(db_name_1="twitter_reply", inclination=2)
 
-    print("twitter_tweet & reply")
-    make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply")
-    print("twitter_tweet & reply_1")
-    make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply", inclination=1)
-    print("twitter_tweet & reply_2")
-    make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply", inclination=2)
+    # print("twitter_tweet & reply")
+    # make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply")
+    # print("twitter_tweet & reply_1")
+    # make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply", inclination=1)
+    # print("twitter_tweet & reply_2")
+    # make_model(db_name_1="twitter_tweet", db_name_2="twitter_reply", inclination=2)

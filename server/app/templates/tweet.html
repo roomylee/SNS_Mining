@@ -42,15 +42,24 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="../static/js/bootstrap.min.js"></script>
 
+    
+
     <script>
         function button_generate(inclination, json){
             data = JSON.parse(json);
             var i;
-            var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+            var left_politician = [
+                "김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
                 "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
-                "정세균","진영","천정배","추미애","표창원"]
-            var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
-                 "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                "정세균","진영","천정배","추미애","표창원", "김경진", "주승용",
+                "안민석","이정미","박주민","심상정","김한길"
+            ]
+            var right_politician = [
+                "김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                "원희룡","이준석","정우택","정진석","최경환","주호영",
+                "하태경","이완영","유승민","황영철","김문수","이혜훈","정병국",
+                "이종구"
+            ]
             if(inclination.substring(0,4) == "left"){
                 for(i=0;i<left_politician.length;i++){
                     if(data.indexOf(left_politician[i]) > -1){
@@ -123,8 +132,7 @@
         <!-- Introduction Row -->
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">정치적 진영 기반 SNS 텍스트 마이닝
-                </h1>
+                <h1 class="page-header">정치적 진영 기반 SNS 텍스트 마이닝</h1>
                 <p>정치인들이 많이 사용하는 SNS인 Twitter의 활동 데이터에 대해 텍스트 마이닝을 통해 정치적 상황에 따른 진영별 감정 상태 변화를 분석하는 모델을 개발하고 분석 및 시각화 도구 개발.</p>
                 <p>정치적 진영에 따른 텍스트 마이닝을 통해 정치적/사회적 상황의 분석이나 상황이 일어난 뒤의 감성 상태의 변화와 사회적 이벤트(대통령 선거, 총선, 부동산경기, 증시등락 등) 발생의 예측이 가능.</p>
             </div>
@@ -134,7 +142,7 @@
         <!-- Team Members Row -->
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header text-left">Twitter Analysis&nbsp;<small>Tweet 분석</small>&nbsp;
+                <h1 class="page-header text-left">정치인 Twitter 분석&nbsp;<small>Tweet Analysis</small>&nbsp;
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModal">
                         <span class="glyphicon glyphicon-cog"></span>&nbsp;정치인 선택
@@ -157,7 +165,7 @@
                                         <div class="row">
                                             <div id="left_btn_list" class="col-md-6 text-center">
                                                 <h3 style="margin-top:-5px; margin-bottom: -5px;">진보
-                                                    <small>더민주/국민의당</small>
+                                                    <small>더불어민주당/국민의당/정의당</small>
                                                 </h3>
                                                 <div class="col-md-12"><hr style="margin-top: 10px; margin-bottom: 10px;"></div>
                                                 <div class="col-md-6">
@@ -178,7 +186,7 @@
 
                                             <div id="right_btn_list" class="col-md-6 text-center">
                                                 <h3 style="margin-top:-5px; margin-bottom: -5px;">보수
-                                                    <small>새누리당</small>
+                                                    <small>자유한국당/바른정당</small>
                                                 </h3>
                                                 <div class="col-md-12"><hr style="margin-top: 10px; margin-bottom: 10px;"></div>
                                                 <div class="col-md-6">
@@ -222,7 +230,7 @@
             </div>
             <div class="col-lg-6 text-center">
                 <h2>진보
-                    <small>더민주/국민의당</small>
+                    <small>더불어민주당/국민의당/정의당</small>
                 </h2>
 
                 <div style="height: auto; width: 90%; border:3px solid black;padding: 10px;margin: auto;">
@@ -278,7 +286,7 @@
             </div>
             <div class="col-lg-6 text-center">
                 <h2>보수
-                    <small>새누리당</small>
+                    <small>자유한국당/바른정당</small>
                 </h2>
 
                 <div style="height: auto; width: 90%; border:3px solid black;padding: 10px;margin: auto;">
@@ -331,7 +339,6 @@
             </div>
         </div>
 
-        
         <br>
 
         
@@ -346,12 +353,16 @@
             <div class="col-lg-12">
                 <h1 class="page-header">진영별 사용 단어 분포</h1>
                 <div id="container" style="height: 700px"></div>
+                <hr>
+                <div id="container_left" style="height: 700px"></div>
+                <hr>
+                <div id="container_right" style="height: 700px"></div>
             </div>
         </div>
 
         
 
-
+        <!-- Both Chart -->
         <script type="text/javascript">
             Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
                 return {
@@ -367,9 +378,8 @@
                 };
             });
 
-            var chart = new Highcharts.Chart({
+            var both = new Highcharts.Chart('container',{
                 chart: {
-                    renderTo: 'container',
                     marginLeft: 100,
                     marginRight: 100,
                     marginTop: 120,
@@ -441,18 +451,29 @@
                     formatter: function(chart){
                         var p = this.point;
                         return '<p style="font-size:15px; font-weight:bold;">[' + p.name + '] ' + p.word + '</p><br>'
-                                + '<p style="font-size: 12px;">x:' + p.x + ', y:' + p.y + ', z:' + p.z + '</p>'
+                                + '<p style="font-size:12px;">x:' + p.x + ', y:' + p.y + ', z:' + p.z + '</p>'
+                                + '<br><p style="font-size:13px;"><br><b>[Similar Words]</b><br></p>'
+                                + '<p style="font-size:12px;">'
+                                + '<br>top1: ' + p.top0
+                                + '<br>top2: ' + p.top1
+                                + '<br>top3: ' + p.top2
+                                + '<br>top4: ' + p.top3
+                                + '<br>top5: ' + p.top4 + '</p>'
                     }                    
                 },
                 series: [{
                     name: '진보',
-                    color: 'rgba(223, 83, 83, .5)',
+                    color: 'rgba(59, 150, 237, 0.5)',
                     data: {{left_data|safe}}
 
                 }, {
                     name: '보수',
-                    color: 'rgba(119, 152, 191, .5)',
+                    color: 'rgba(237, 77, 59, 0.5)',
                     data: {{right_data|safe}}
+                }, {
+                    name: '진보&보수',
+                    color: 'rgba(58, 232, 130, 0.5)',
+                    data: {{both_data|safe}}
                 }],
                 legend:{
                     itemStyle:{
@@ -464,13 +485,14 @@
             });
 
             // Add mouse events for rotation
-            $(chart.container).on('mousedown.hc touchstart.hc', function (eStart) {
-                eStart = chart.pointer.normalize(eStart);
+            $(both.container).on('mousedown.hc touchstart.hc', function (eStart) {
+                console.log("both chart click\n")
+                eStart = both.pointer.normalize(eStart);
 
                 var posX = eStart.pageX,
                     posY = eStart.pageY,
-                    alpha = chart.options.chart.options3d.alpha,
-                    beta = chart.options.chart.options3d.beta,
+                    alpha = both.options.chart.options3d.alpha,
+                    beta = both.options.chart.options3d.beta,
                     newAlpha,
                     newBeta,
                     sensitivity = 5; // lower is more sensitive
@@ -479,13 +501,308 @@
                     'mousemove.hc touchdrag.hc': function (e) {
                         // Run beta
                         newBeta = beta + (posX - e.pageX) / sensitivity;
-                        chart.options.chart.options3d.beta = newBeta;
+                        both.options.chart.options3d.beta = newBeta;
 
                         // Run alpha
                         newAlpha = alpha + (e.pageY - posY) / sensitivity;
-                        chart.options.chart.options3d.alpha = newAlpha;
+                        both.options.chart.options3d.alpha = newAlpha;
 
-                        chart.redraw(false);
+                        both.redraw(false);
+                    },
+                    'mouseup touchend': function () {
+                        $(document).off('.hc');
+                    }
+                });
+            });
+        </script>
+
+        <hr>
+
+        <!-- Left Chart -->
+        <script type="text/javascript">
+            Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
+                return {
+                    radialGradient: {
+                        cx: 0.4,
+                        cy: 0.3,
+                        r: 0.5
+                    },
+                    stops: [
+                        [0, color],
+                        [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
+                    ]
+                };
+            });
+
+            var left = new Highcharts.Chart('container_left',{
+                chart: {
+                    marginLeft: 100,
+                    marginRight: 100,
+                    marginTop: 120,
+                    marginBottom: 170,
+                    type: 'scatter',
+                    options3d: {
+                        enabled: true,
+                        alpha: 10,
+                        beta: 30,
+                        depth: 600,
+                        viewDistance: 5,
+                        fitToPlot: false,
+                        frame: {
+                            bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
+                            back: { size: 1, color: 'rgba(0,0,0,0.04)' },
+                            side: { size: 1, color: 'rgba(0,0,0,0.06)' }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Vocabulary Distribution of 진보 진영'
+                },
+                subtitle: {
+                    text: 'Top 100 Frequent words Analysis by Word2Vec'
+                },
+                yAxis: {
+                    title: {
+                        text: "<b>Y-Axis</b>"
+                    }
+                },
+                xAxis: {
+                    title: {
+                        text: "<b>X-Axis</b>"
+                    },
+                    gridLineWidth: 1
+                },
+                zAxis: {
+                    title: {
+                        text: "<b>Z-Axis</b>"
+                    },
+                    showFirstLabel: false
+                },
+                plotOptions: {
+                    scatter: {
+                        marker: {
+                            radius: 5,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    lineColor: 'rgb(100,100,100)'
+                                }
+                            }
+                        },
+                        states: {
+                            hover: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        }
+                    },
+                    series: {
+                        stickyTracking: false
+                    }
+                },
+                tooltip: {
+                    crosshairs: true,
+                    hideDelay: 100,
+                    formatter: function(chart){
+                        var p = this.point;
+                        return '<p style="font-size:15px; font-weight:bold;">[' + p.name + '] ' + p.word + '</p><br>'
+                                + '<p style="font-size:12px;">x:' + p.x + ', y:' + p.y + ', z:' + p.z + '</p>'
+                                + '<br><p style="font-size:13px;"><br><b>[Similar Words]</b><br></p>'
+                                + '<p style="font-size:12px;">'
+                                + '<br>top1: ' + p.top0
+                                + '<br>top2: ' + p.top1
+                                + '<br>top3: ' + p.top2
+                                + '<br>top4: ' + p.top3
+                                + '<br>top5: ' + p.top4 + '</p>'
+                    }                    
+                },
+                series: [{
+                    name: '진보',
+                    color: 'rgba(59, 150, 237, 0.5)',
+                    data: {{left_only_data|safe}}
+
+                }],
+                legend:{
+                    itemStyle:{
+                        fontSize: '18px'
+                    },
+                    floating: true,
+                    backgroundColor: '#FFFFFF'
+                }
+            });
+
+            // Add mouse events for rotation
+            $(left.container).on('mousedown.hc touchstart.hc', function (eStart) {
+                console.log("left chart click\n")
+                eStart = left.pointer.normalize(eStart);
+
+                var posX = eStart.pageX,
+                    posY = eStart.pageY,
+                    alpha = left.options.chart.options3d.alpha,
+                    beta = left.options.chart.options3d.beta,
+                    newAlpha,
+                    newBeta,
+                    sensitivity = 5; // lower is more sensitive
+
+                $(document).on({
+                    'mousemove.hc touchdrag.hc': function (e) {
+                        // Run beta
+                        newBeta = beta + (posX - e.pageX) / sensitivity;
+                        left.options.chart.options3d.beta = newBeta;
+
+                        // Run alpha
+                        newAlpha = alpha + (e.pageY - posY) / sensitivity;
+                        left.options.chart.options3d.alpha = newAlpha;
+
+                        left.redraw(false);
+                    },
+                    'mouseup touchend': function () {
+                        $(document).off('.hc');
+                    }
+                });
+            });
+        </script>
+
+        <hr>
+
+        <!-- Right Chart -->
+        <script type="text/javascript">
+            Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
+                return {
+                    radialGradient: {
+                        cx: 0.4,
+                        cy: 0.3,
+                        r: 0.5
+                    },
+                    stops: [
+                        [0, color],
+                        [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
+                    ]
+                };
+            });
+
+            var right = new Highcharts.Chart('container_right',{
+                chart: {
+                    marginLeft: 100,
+                    marginRight: 100,
+                    marginTop: 120,
+                    marginBottom: 170,
+                    type: 'scatter',
+                    options3d: {
+                        enabled: true,
+                        alpha: 10,
+                        beta: 30,
+                        depth: 600,
+                        viewDistance: 5,
+                        fitToPlot: false,
+                        frame: {
+                            bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
+                            back: { size: 1, color: 'rgba(0,0,0,0.04)' },
+                            side: { size: 1, color: 'rgba(0,0,0,0.06)' }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Vocabulary Distribution of 보수 진영'
+                },
+                subtitle: {
+                    text: 'Top 100 Frequent words Analysis by Word2Vec'
+                },
+                yAxis: {
+                    title: {
+                        text: "<b>Y-Axis</b>"
+                    }
+                },
+                xAxis: {
+                    title: {
+                        text: "<b>X-Axis</b>"
+                    },
+                    gridLineWidth: 1
+                },
+                zAxis: {
+                    title: {
+                        text: "<b>Z-Axis</b>"
+                    },
+                    showFirstLabel: false
+                },
+                plotOptions: {
+                    scatter: {
+                        marker: {
+                            radius: 5,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    lineColor: 'rgb(100,100,100)'
+                                }
+                            }
+                        },
+                        states: {
+                            hover: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        }
+                    },
+                    series: {
+                        stickyTracking: false
+                    }
+                },
+                tooltip: {
+                    crosshairs: true,
+                    hideDelay: 100,
+                    formatter: function(chart){
+                        var p = this.point;
+                        return '<p style="font-size:15px; font-weight:bold;">[' + p.name + '] ' + p.word + '</p><br>'
+                                + '<p style="font-size:12px;">x:' + p.x + ', y:' + p.y + ', z:' + p.z + '</p>'
+                                + '<br><p style="font-size:13px;"><br><b>[Similar Words]</b><br></p>'
+                                + '<p style="font-size:12px;">'
+                                + '<br>top1: ' + p.top0
+                                + '<br>top2: ' + p.top1
+                                + '<br>top3: ' + p.top2
+                                + '<br>top4: ' + p.top3
+                                + '<br>top5: ' + p.top4 + '</p>'
+                    }                    
+                },
+                series: [{
+                    name: '보수',
+                    color: 'rgba(237, 77, 59, 0.5)',
+                    data: {{right_only_data|safe}}
+                }],
+                legend:{
+                    itemStyle:{
+                        fontSize: '18px'
+                    },
+                    floating: true,
+                    backgroundColor: '#FFFFFF'
+                }
+            });
+
+            // Add mouse events for rotation
+            $(right.container).on('mousedown.hc touchstart.hc', function (eStart) {
+                console.log("right chart click\n")
+                eStart = right.pointer.normalize(eStart);
+
+                var posX = eStart.pageX,
+                    posY = eStart.pageY,
+                    alpha = right.options.chart.options3d.alpha,
+                    beta = right.options.chart.options3d.beta,
+                    newAlpha,
+                    newBeta,
+                    sensitivity = 5; // lower is more sensitive
+
+                $(document).on({
+                    'mousemove.hc touchdrag.hc': function (e) {
+                        // Run beta
+                        newBeta = beta + (posX - e.pageX) / sensitivity;
+                        right.options.chart.options3d.beta = newBeta;
+
+                        // Run alpha
+                        newAlpha = alpha + (e.pageY - posY) / sensitivity;
+                        right.options.chart.options3d.alpha = newAlpha;
+
+                        right.redraw(false);
                     },
                     'mouseup touchend': function () {
                         $(document).off('.hc');
@@ -500,7 +817,7 @@
         <footer>
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Copyright 2017. Joohong Lee</p>
+                    <p>Copyright 2017. Joohong Lee in Hanyang Univ. AI LAB</p>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -511,11 +828,18 @@
 
     <script>
         function resetHandler(){
-            var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+            var left_politician = [
+                "김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
                 "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
-                "정세균","진영","천정배","추미애","표창원"]
-            var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
-                 "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                "정세균","진영","천정배","추미애","표창원", "김경진", "주승용",
+                "안민석","이정미","박주민","심상정","김한길"
+            ];
+            var right_politician = [
+                "김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                "원희룡","이준석","정우택","정진석","최경환","주호영",
+                "하태경","이완영","유승민","황영철","김문수","이혜훈","정병국",
+                "이종구"
+            ];
             var num;
             for(num=0;num<left_politician.length;num++){
                 if($("#left-ck-"+num).prop("checked")){
@@ -578,11 +902,18 @@
         function left_all_select(){
             $('input:checkbox[name="left_btn_list-ck"]').each(function() {
                 this.checked = true; //checked 처리
-                var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                var left_politician = [
+                    "김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
                     "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
-                    "정세균","진영","천정배","추미애","표창원"]
-                var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
-                     "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                    "정세균","진영","천정배","추미애","표창원", "김경진", "주승용",
+                    "안민석","이정미","박주민","심상정","김한길"
+                ];
+                var right_politician = [
+                    "김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                    "원희룡","이준석","정우택","정진석","최경환","주호영",
+                    "하태경","이완영","유승민","황영철","김문수","이혜훈","정병국",
+                    "이종구"
+                ];
                 var num;
                 for(num=0;num<left_politician.length;num++){
                     $("#left-btn-"+num).attr('class', 'btn btn-primary btn-block');
@@ -595,11 +926,18 @@
         function right_all_select(){
             $('input:checkbox[name="right_btn_list-ck"]').each(function() {
                 this.checked = true; //checked 처리
-                var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                var left_politician = [
+                    "김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
                     "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
-                    "정세균","진영","천정배","추미애","표창원"]
-                var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
-                     "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                    "정세균","진영","천정배","추미애","표창원", "김경진", "주승용",
+                    "안민석","이정미","박주민","심상정","김한길"
+                ];
+                var right_politician = [
+                    "김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                    "원희룡","이준석","정우택","정진석","최경환","주호영",
+                    "하태경","이완영","유승민","황영철","김문수","이혜훈","정병국",
+                    "이종구"
+                ];
                 var num;
                 for(num=0;num<right_politician.length;num++){
                     $("#right-btn-"+num).attr('class', 'btn btn-primary btn-block');
@@ -613,11 +951,18 @@
         function left_all_unselect(){
             $('input:checkbox[name="left_btn_list-ck"]').each(function() {
                 this.checked = false; //unchecked 처리
-                var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                var left_politician = [
+                    "김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
                     "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
-                    "정세균","진영","천정배","추미애","표창원"]
-                var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
-                     "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                    "정세균","진영","천정배","추미애","표창원", "김경진", "주승용",
+                    "안민석","이정미","박주민","심상정","김한길"
+                ];
+                var right_politician = [
+                    "김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                    "원희룡","이준석","정우택","정진석","최경환","주호영",
+                    "하태경","이완영","유승민","황영철","김문수","이혜훈","정병국",
+                    "이종구"
+                ];
                 var num;
                 for(num=0;num<left_politician.length;num++){
                     $("#left-btn-"+num).attr('class', 'btn btn-default btn-block');
@@ -630,11 +975,18 @@
         function right_all_unselect(){
             $('input:checkbox[name="right_btn_list-ck"]').each(function() {
                 this.checked = false; //unchecked 처리
-                var left_politician = ["김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
+                var left_politician = [
+                    "김부겸","김성식","김진표","문재인","민병두","박범계","박영선",
                     "박원순","박지원","송영길","안철수","안희정","이재명","정동영",
-                    "정세균","진영","천정배","추미애","표창원"]
-                var right_politician = ["김무성","김진태","나경원","남경필","서청원","심재철","원유철",
-                     "원희룡","이준석","장제원","정우택","정진석","최경환"];
+                    "정세균","진영","천정배","추미애","표창원", "김경진", "주승용",
+                    "안민석","이정미","박주민","심상정","김한길"
+                ];
+                var right_politician = [
+                    "김무성","김진태","나경원","남경필","서청원","심재철","원유철",
+                    "원희룡","이준석","정우택","정진석","최경환","주호영",
+                    "하태경","이완영","유승민","황영철","김문수","이혜훈","정병국",
+                    "이종구"
+                ];
                 var num;
                 for(num=0;num<right_politician.length;num++){
                     $("#right-btn-"+num).attr('class', 'btn btn-default btn-block');

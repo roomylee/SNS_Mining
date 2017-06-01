@@ -6,6 +6,7 @@ sys.path.insert(0, '../../')
 from flask import Flask, render_template, request, jsonify
 from sqlalchemy import create_engine
 import json
+import random
 import pytagcloud
 from NLP import *
 from word2vec.word2vec_module import *
@@ -72,11 +73,22 @@ def make_Screen_Name_list(people_list):
     return result_list
 
 def make_word_cloud(word_list, file_name):
-    avg = np.mean(list(zip(*word_list))[1])
-    taglist = pytagcloud.make_tags(word_list[:100],
-                                   maxsize=20 * (word_list[0][1] - (avg) + 1) / (avg))
-    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_%s.jpg' % file_name, size=(600, 400),
-                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
+    r = lambda: random.randint(0,255)
+    color = lambda: (r(),r(),r())
+    taglist = []
+    for idx in range(len(word_list)):
+        dic = {}
+        dic['tag'] = word_list[idx][0]
+        dic['color'] = color()
+        if idx < 10:
+            dic['size'] = 80 - (idx*3)
+        elif idx < 25:
+            dic['size'] = 70 - (idx*2)
+        else:
+            dic['size'] = 20
+        taglist.append(dic)
+    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_%s.jpg' % file_name,
+                                size=(600, 400),fontname='BMHANNA_11yrs_ttf', rectangular=False)
     print("%s done!" % file_name)
 
 
@@ -117,16 +129,22 @@ def extract_both_word(left_word, right_word):
 
 
 
+
+
+
+
+
+
 # 메인 페이지 라우팅
 @app.route('/')
 def main():
     # 진보 진영의 워드클라우드 생성
     left_total_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency", "left_reply_frequency"])
-    #make_word_cloud(word_list=left_word, file_name="left")
+    make_word_cloud(word_list=left_total_word[:50], file_name="left")
 
     # 보수 진영의 워드클라우드 생성
     right_total_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency", "right_reply_frequency"])
-    #make_word_cloud(word_list=right_word, file_name="right")
+    make_word_cloud(word_list=right_total_word[:50], file_name="right")
 
 
     # 진보/보수 동시에 나타나는 차트 그리기위한 전처리
@@ -141,11 +159,11 @@ def main():
     both_data = make_point_data(both_word, both_vec, "진보&보수")
 
     # 진보 차트 그리기
-    left_only_vec = vectorize(left_total_word, "twitter_tweet", "twitter_reply")
+    left_only_vec = vectorize(left_total_word, "twitter_tweet", "twitter_reply_2")
     left_only_data = make_point_data(left_total_word, left_only_vec, "진보")
 
     # 보수 차트 그리기
-    right_only_vec = vectorize(right_total_word, "twitter_tweet", "twitter_reply")
+    right_only_vec = vectorize(right_total_word, "twitter_tweet", "twitter_reply_1")
     right_only_data = make_point_data(right_total_word, right_only_vec, "보수")
 
 
@@ -174,101 +192,79 @@ def main():
 # 정치인 작성 트윗 라우팅
 @app.route('/tweet')
 def tweet():
-    # 진보 진영 워드클라우드 생성
-    left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency"])
-    avg = np.mean(list(zip(*left_word))[1])
-    taglist = pytagcloud.make_tags(left_word[:100],
-                                   maxsize=20 * (left_word[0][1] - (avg)+1) / (avg))
-    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400),
-                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
-    print("Left done!")
+    # 진보 진영의 워드클라우드 생성
+    left_total_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_frequency"])
+    make_word_cloud(word_list=left_total_word[:50], file_name="left")
 
-    # 보수 진영 워드클라우드 생성
-    right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency"])
-    avg = np.mean(list(zip(*right_word))[1])
-    taglist = pytagcloud.make_tags(right_word[:100],
-                                   maxsize=20 * (right_word[0][1] - (avg)+1) / (avg))
-    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400),
-                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
-    print("Right done!")
+    # 보수 진영의 워드클라우드 생성
+    right_total_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_frequency"])
+    make_word_cloud(word_list=right_total_word[:50], file_name="right")
 
-    left_vec = vectorize(left_word)
-    #left_vec = pca_projection(left_vec)
-    right_vec = vectorize(right_word)
-    #right_vec = pca_projection(right_vec)
+    # 진보/보수 동시에 나타나는 차트 그리기위한 전처리
+    left_word, right_word, both_word = extract_both_word(left_total_word, right_total_word)
+    # 진보, 보수, 진보&보수, 3가지 class에 대한 vector 값 구하기
+    left_vec = vectorize(left_word, "twitter_tweet")
+    right_vec = vectorize(right_word, "twitter_tweet")
+    both_vec = vectorize(both_word, "twitter_tweet")
+    # 진보, 보수, 진보&보수, 3가지 class의 단어와 유사단어, vector를 합쳐 형식에 맞춰 생
+    left_data = make_point_data(left_word, left_vec, "진보")
+    right_data = make_point_data(right_word, right_vec, "보수")
+    both_data = make_point_data(both_word, both_vec, "진보&보수")
 
-    left_data = '['
-    for idx in range(len(left_vec)):
-        if idx != 0:
-            left_data += ","
-        left_data += "{name:'진보',word:'%s',x:%s,y:%s,z:%s}" \
-                     % (left_word[idx][0], left_vec[idx][0], left_vec[idx][1], left_vec[idx][2])
-    left_data += ']'
+    # 진보 차트 그리기
+    left_only_vec = vectorize(left_total_word, "twitter_tweet_2")
+    left_only_data = make_point_data(left_total_word, left_only_vec, "진보")
 
-    right_data = '['
-    for idx in range(len(right_vec)):
-        if idx != 0:
-            right_data += ","
-        right_data += "{name:'보수',word:'%s',x:%s,y:%s,z:%s}" \
-                      % (right_word[idx][0], right_vec[idx][0], right_vec[idx][1], right_vec[idx][2])
-    right_data += ']'
+    # 보수 차트 그리기
+    right_only_vec = vectorize(right_total_word, "twitter_tweet_1")
+    right_only_data = make_point_data(right_total_word, right_only_vec, "보수")
 
-
-    # 트윗에 대한 html 파일로 실행
+    # 통합 버전 html 파일로 실행
     return render_template('tweet.html',
-                           left_freq=left_word, right_freq=right_word,
-                           left_data=left_data, right_data=right_data,
+                           left_freq=left_total_word, right_freq=right_total_word,
+                           left_data=left_data, right_data=right_data, both_data=both_data,
+                           left_only_data=left_only_data, right_only_data=right_only_data,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
+
 
 # 답글 라우팅
 @app.route('/reply')
 def reply():
-    # 진보 워드클라우드
-    left_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_reply_frequency"])
-    avg = np.mean(list(zip(*left_word))[1])
-    taglist = pytagcloud.make_tags(left_word[:100],
-                                   maxsize=20 * (left_word[0][1] - (avg)+1) / (avg))
-    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_left.jpg', size=(600, 400),
-                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
-    print("Left done!")
+    # 진보 진영의 워드클라우드 생성
+    left_total_word = get_frequent_words(make_Screen_Name_list(left_select), ["left_reply_frequency"])
+    make_word_cloud(word_list=left_total_word[:50], file_name="left")
 
-    # 보수 워드클라우드
-    right_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_reply_frequency"])
-    avg = np.mean(list(zip(*right_word))[1])
-    taglist = pytagcloud.make_tags(right_word[:100],
-                                   maxsize=20 * (right_word[0][1] - (avg)+1) / (avg))
-    pytagcloud.create_tag_image(taglist, './static/img/wordcloud_right.jpg', size=(600, 400),
-                                fontname='BMHANNA_11yrs_ttf', rectangular=False)
-    print("Right done!")
+    # 보수 진영의 워드클라우드 생성
+    right_total_word = get_frequent_words(make_Screen_Name_list(right_select), ["right_reply_frequency"])
+    make_word_cloud(word_list=right_total_word[:50], file_name="right")
 
-    left_vec = vectorize(left_word)
-    #left_vec = pca_projection(left_vec)
-    right_vec = vectorize(right_word)
-    #right_vec = pca_projection(right_vec)
+    # 진보/보수 동시에 나타나는 차트 그리기위한 전처리
+    left_word, right_word, both_word = extract_both_word(left_total_word, right_total_word)
+    # 진보, 보수, 진보&보수, 3가지 class에 대한 vector 값 구하기
+    left_vec = vectorize(left_word, "twitter_reply")
+    right_vec = vectorize(right_word, "twitter_reply")
+    both_vec = vectorize(both_word, "twitter_reply")
+    # 진보, 보수, 진보&보수, 3가지 class의 단어와 유사단어, vector를 합쳐 형식에 맞춰 생
+    left_data = make_point_data(left_word, left_vec, "진보")
+    right_data = make_point_data(right_word, right_vec, "보수")
+    both_data = make_point_data(both_word, both_vec, "진보&보수")
 
-    left_data = '['
-    for idx in range(len(left_vec)):
-        if idx != 0:
-            left_data += ","
-        left_data += "{name:'진보',word:'%s',x:%s,y:%s,z:%s}" \
-                     % (left_word[idx][0], left_vec[idx][0], left_vec[idx][1], left_vec[idx][2])
-    left_data += ']'
+    # 진보 차트 그리기
+    left_only_vec = vectorize(left_total_word, "twitter_reply_2")
+    left_only_data = make_point_data(left_total_word, left_only_vec, "진보")
 
-    right_data = '['
-    for idx in range(len(right_vec)):
-        if idx != 0:
-            right_data += ","
-        right_data += "{name:'보수',word:'%s',x:%s,y:%s,z:%s}" \
-                      % (right_word[idx][0], right_vec[idx][0], right_vec[idx][1], right_vec[idx][2])
-    right_data += ']'
+    # 보수 차트 그리기
+    right_only_vec = vectorize(right_total_word, "twitter_reply_1")
+    right_only_data = make_point_data(right_total_word, right_only_vec, "보수")
 
+    # 통합 버전 html 파일로 실행
     return render_template('reply.html',
-                           left_freq=left_word, right_freq=right_word,
-                           left_data=left_data, right_data=right_data,
+                           left_freq=left_total_word, right_freq=right_total_word,
+                           left_data=left_data, right_data=right_data, both_data=both_data,
+                           left_only_data=left_only_data, right_only_data=right_only_data,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
-
 
 # 체크박스에 대한 ajax처리, 선택한 정치인에 대한 정보 받아옴.
 @app.route('/checkbox', methods=["GET", "POST"])
