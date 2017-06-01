@@ -129,25 +129,31 @@ def main():
     #make_word_cloud(word_list=right_word, file_name="right")
 
 
+    # 진보/보수 동시에 나타나는 차트 그리기위한 전처리
     left_word, right_word, both_word = extract_both_word(left_total_word, right_total_word)
-
-
-
+    # 진보, 보수, 진보&보수, 3가지 class에 대한 vector 값 구하기
     left_vec = vectorize(left_word, "twitter_tweet", "twitter_reply")
     right_vec = vectorize(right_word, "twitter_tweet", "twitter_reply")
     both_vec = vectorize(both_word, "twitter_tweet", "twitter_reply")
-
-
+    # 진보, 보수, 진보&보수, 3가지 class의 단어와 유사단어, vector를 합쳐 형식에 맞춰 생
     left_data = make_point_data(left_word, left_vec, "진보")
     right_data = make_point_data(right_word, right_vec, "보수")
     both_data = make_point_data(both_word, both_vec, "진보&보수")
 
+    # 진보 차트 그리기
+    left_only_vec = vectorize(left_total_word, "twitter_tweet", "twitter_reply")
+    left_only_data = make_point_data(left_total_word, left_only_vec, "진보")
+
+    # 보수 차트 그리기
+    right_only_vec = vectorize(right_total_word, "twitter_tweet", "twitter_reply")
+    right_only_data = make_point_data(right_total_word, right_only_vec, "보수")
 
 
     # 통합 버전 html 파일로 실행
     return render_template('integration.html',
                            left_freq=left_total_word, right_freq=right_total_word,
                            left_data=left_data, right_data=right_data, both_data=both_data,
+                           left_only_data=left_only_data, right_only_data=right_only_data,
                            left_select=json.dumps(left_select),
                            right_select=json.dumps(right_select))
 

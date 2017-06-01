@@ -353,12 +353,16 @@
             <div class="col-lg-12">
                 <h1 class="page-header">진영별 사용 단어 분포</h1>
                 <div id="container" style="height: 700px"></div>
+                <hr>
+                <div id="container_left" style="height: 700px"></div>
+                <hr>
+                <div id="container_right" style="height: 700px"></div>
             </div>
         </div>
 
         
 
-
+        <!-- Both Chart -->
         <script type="text/javascript">
             Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
                 return {
@@ -374,9 +378,8 @@
                 };
             });
 
-            var chart = new Highcharts.Chart({
+            var both = new Highcharts.Chart('container',{
                 chart: {
-                    renderTo: 'container',
                     marginLeft: 100,
                     marginRight: 100,
                     marginTop: 120,
@@ -482,13 +485,14 @@
             });
 
             // Add mouse events for rotation
-            $(chart.container).on('mousedown.hc touchstart.hc', function (eStart) {
-                eStart = chart.pointer.normalize(eStart);
+            $(both.container).on('mousedown.hc touchstart.hc', function (eStart) {
+                console.log("both chart click\n")
+                eStart = both.pointer.normalize(eStart);
 
                 var posX = eStart.pageX,
                     posY = eStart.pageY,
-                    alpha = chart.options.chart.options3d.alpha,
-                    beta = chart.options.chart.options3d.beta,
+                    alpha = both.options.chart.options3d.alpha,
+                    beta = both.options.chart.options3d.beta,
                     newAlpha,
                     newBeta,
                     sensitivity = 5; // lower is more sensitive
@@ -497,13 +501,308 @@
                     'mousemove.hc touchdrag.hc': function (e) {
                         // Run beta
                         newBeta = beta + (posX - e.pageX) / sensitivity;
-                        chart.options.chart.options3d.beta = newBeta;
+                        both.options.chart.options3d.beta = newBeta;
 
                         // Run alpha
                         newAlpha = alpha + (e.pageY - posY) / sensitivity;
-                        chart.options.chart.options3d.alpha = newAlpha;
+                        both.options.chart.options3d.alpha = newAlpha;
 
-                        chart.redraw(false);
+                        both.redraw(false);
+                    },
+                    'mouseup touchend': function () {
+                        $(document).off('.hc');
+                    }
+                });
+            });
+        </script>
+
+        <hr>
+
+        <!-- Left Chart -->
+        <script type="text/javascript">
+            Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
+                return {
+                    radialGradient: {
+                        cx: 0.4,
+                        cy: 0.3,
+                        r: 0.5
+                    },
+                    stops: [
+                        [0, color],
+                        [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
+                    ]
+                };
+            });
+
+            var left = new Highcharts.Chart('container_left',{
+                chart: {
+                    marginLeft: 100,
+                    marginRight: 100,
+                    marginTop: 120,
+                    marginBottom: 170,
+                    type: 'scatter',
+                    options3d: {
+                        enabled: true,
+                        alpha: 10,
+                        beta: 30,
+                        depth: 600,
+                        viewDistance: 5,
+                        fitToPlot: false,
+                        frame: {
+                            bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
+                            back: { size: 1, color: 'rgba(0,0,0,0.04)' },
+                            side: { size: 1, color: 'rgba(0,0,0,0.06)' }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Vocabulary Distribution of 진보 진영'
+                },
+                subtitle: {
+                    text: 'Top 100 Frequent words Analysis by Word2Vec'
+                },
+                yAxis: {
+                    title: {
+                        text: "<b>Y-Axis</b>"
+                    }
+                },
+                xAxis: {
+                    title: {
+                        text: "<b>X-Axis</b>"
+                    },
+                    gridLineWidth: 1
+                },
+                zAxis: {
+                    title: {
+                        text: "<b>Z-Axis</b>"
+                    },
+                    showFirstLabel: false
+                },
+                plotOptions: {
+                    scatter: {
+                        marker: {
+                            radius: 5,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    lineColor: 'rgb(100,100,100)'
+                                }
+                            }
+                        },
+                        states: {
+                            hover: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        }
+                    },
+                    series: {
+                        stickyTracking: false
+                    }
+                },
+                tooltip: {
+                    crosshairs: true,
+                    hideDelay: 100,
+                    formatter: function(chart){
+                        var p = this.point;
+                        return '<p style="font-size:15px; font-weight:bold;">[' + p.name + '] ' + p.word + '</p><br>'
+                                + '<p style="font-size:12px;">x:' + p.x + ', y:' + p.y + ', z:' + p.z + '</p>'
+                                + '<br><p style="font-size:13px;"><br><b>[Similar Words]</b><br></p>'
+                                + '<p style="font-size:12px;">'
+                                + '<br>top1: ' + p.top0
+                                + '<br>top2: ' + p.top1
+                                + '<br>top3: ' + p.top2
+                                + '<br>top4: ' + p.top3
+                                + '<br>top5: ' + p.top4 + '</p>'
+                    }                    
+                },
+                series: [{
+                    name: '진보',
+                    color: 'rgba(59, 150, 237, 0.5)',
+                    data: {{left_only_data|safe}}
+
+                }],
+                legend:{
+                    itemStyle:{
+                        fontSize: '18px'
+                    },
+                    floating: true,
+                    backgroundColor: '#FFFFFF'
+                }
+            });
+
+            // Add mouse events for rotation
+            $(left.container).on('mousedown.hc touchstart.hc', function (eStart) {
+                console.log("left chart click\n")
+                eStart = left.pointer.normalize(eStart);
+
+                var posX = eStart.pageX,
+                    posY = eStart.pageY,
+                    alpha = left.options.chart.options3d.alpha,
+                    beta = left.options.chart.options3d.beta,
+                    newAlpha,
+                    newBeta,
+                    sensitivity = 5; // lower is more sensitive
+
+                $(document).on({
+                    'mousemove.hc touchdrag.hc': function (e) {
+                        // Run beta
+                        newBeta = beta + (posX - e.pageX) / sensitivity;
+                        left.options.chart.options3d.beta = newBeta;
+
+                        // Run alpha
+                        newAlpha = alpha + (e.pageY - posY) / sensitivity;
+                        left.options.chart.options3d.alpha = newAlpha;
+
+                        left.redraw(false);
+                    },
+                    'mouseup touchend': function () {
+                        $(document).off('.hc');
+                    }
+                });
+            });
+        </script>
+
+        <hr>
+
+        <!-- Right Chart -->
+        <script type="text/javascript">
+            Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
+                return {
+                    radialGradient: {
+                        cx: 0.4,
+                        cy: 0.3,
+                        r: 0.5
+                    },
+                    stops: [
+                        [0, color],
+                        [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
+                    ]
+                };
+            });
+
+            var right = new Highcharts.Chart('container_right',{
+                chart: {
+                    marginLeft: 100,
+                    marginRight: 100,
+                    marginTop: 120,
+                    marginBottom: 170,
+                    type: 'scatter',
+                    options3d: {
+                        enabled: true,
+                        alpha: 10,
+                        beta: 30,
+                        depth: 600,
+                        viewDistance: 5,
+                        fitToPlot: false,
+                        frame: {
+                            bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
+                            back: { size: 1, color: 'rgba(0,0,0,0.04)' },
+                            side: { size: 1, color: 'rgba(0,0,0,0.06)' }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Vocabulary Distribution of 보수 진영'
+                },
+                subtitle: {
+                    text: 'Top 100 Frequent words Analysis by Word2Vec'
+                },
+                yAxis: {
+                    title: {
+                        text: "<b>Y-Axis</b>"
+                    }
+                },
+                xAxis: {
+                    title: {
+                        text: "<b>X-Axis</b>"
+                    },
+                    gridLineWidth: 1
+                },
+                zAxis: {
+                    title: {
+                        text: "<b>Z-Axis</b>"
+                    },
+                    showFirstLabel: false
+                },
+                plotOptions: {
+                    scatter: {
+                        marker: {
+                            radius: 5,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    lineColor: 'rgb(100,100,100)'
+                                }
+                            }
+                        },
+                        states: {
+                            hover: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        }
+                    },
+                    series: {
+                        stickyTracking: false
+                    }
+                },
+                tooltip: {
+                    crosshairs: true,
+                    hideDelay: 100,
+                    formatter: function(chart){
+                        var p = this.point;
+                        return '<p style="font-size:15px; font-weight:bold;">[' + p.name + '] ' + p.word + '</p><br>'
+                                + '<p style="font-size:12px;">x:' + p.x + ', y:' + p.y + ', z:' + p.z + '</p>'
+                                + '<br><p style="font-size:13px;"><br><b>[Similar Words]</b><br></p>'
+                                + '<p style="font-size:12px;">'
+                                + '<br>top1: ' + p.top0
+                                + '<br>top2: ' + p.top1
+                                + '<br>top3: ' + p.top2
+                                + '<br>top4: ' + p.top3
+                                + '<br>top5: ' + p.top4 + '</p>'
+                    }                    
+                },
+                series: [{
+                    name: '보수',
+                    color: 'rgba(237, 77, 59, 0.5)',
+                    data: {{right_only_data|safe}}
+                }],
+                legend:{
+                    itemStyle:{
+                        fontSize: '18px'
+                    },
+                    floating: true,
+                    backgroundColor: '#FFFFFF'
+                }
+            });
+
+            // Add mouse events for rotation
+            $(right.container).on('mousedown.hc touchstart.hc', function (eStart) {
+                console.log("right chart click\n")
+                eStart = right.pointer.normalize(eStart);
+
+                var posX = eStart.pageX,
+                    posY = eStart.pageY,
+                    alpha = right.options.chart.options3d.alpha,
+                    beta = right.options.chart.options3d.beta,
+                    newAlpha,
+                    newBeta,
+                    sensitivity = 5; // lower is more sensitive
+
+                $(document).on({
+                    'mousemove.hc touchdrag.hc': function (e) {
+                        // Run beta
+                        newBeta = beta + (posX - e.pageX) / sensitivity;
+                        right.options.chart.options3d.beta = newBeta;
+
+                        // Run alpha
+                        newAlpha = alpha + (e.pageY - posY) / sensitivity;
+                        right.options.chart.options3d.alpha = newAlpha;
+
+                        right.redraw(false);
                     },
                     'mouseup touchend': function () {
                         $(document).off('.hc');

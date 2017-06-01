@@ -51,7 +51,7 @@ def make_model(db_name_1, db_name_2 = None):
                 continue
             row = qry.fetchone()
 
-    model = gensim.models.Word2Vec(train_docs, size=5)
+    model = gensim.models.Word2Vec(train_docs, size=3)
 
     if db_name_2 is None:
         model.save('%s.model' % db_name_1)
