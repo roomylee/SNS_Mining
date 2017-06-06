@@ -29,7 +29,7 @@ qry = conn.cursor(buffered=True)
 # Tweet을 수집하여 twitter_tweet DB에 저장
 def collect_tweet(id, inclination):
     # tweepy.Cursor를 통해서 타임라인 게시글 탐색
-    cursor = tweepy.Cursor(api.user_timeline, user_id=id).items()
+    cursor = tweepy.Cursor(api.user_timeline, user_id=id, since=(datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")).items()
 
     while True:
         try:
