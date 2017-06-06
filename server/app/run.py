@@ -99,7 +99,7 @@ def make_point_data(word_list, vec_list, inclinatation):
             point_data += ","
         point_data += "{name:'%s',word:'%s',x:%s,y:%s,z:%s" \
                       % (inclinatation,word_list[idx][0], vec_list[idx][0][0], vec_list[idx][0][1], vec_list[idx][0][2])
-        for rank in range(5):
+        for rank in range(10):
             point_data += ",top%d:'%s'" % (rank, vec_list[idx][1][rank][0])
         point_data += '}'
     point_data += ']'
