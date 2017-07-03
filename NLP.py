@@ -51,7 +51,7 @@ def get_frequent_words(people_list, table_list):
     sorted_list = sorted(freq_dict.items(), key=operator.itemgetter(1))
     sorted_list.reverse()
 
-    return sorted_list[:1000]
+    return sorted_list[:500]
 
 
 def extract_frequent_words(mysql_query, is_repost=None):
