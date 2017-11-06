@@ -1,12 +1,7 @@
-import mysql.connector as msc
-from collections import Counter
 from NLP import *
+from config import db_config
 
-lab={'host':***REMOVED***,
-        'port':***REMOVED***,
-        'user':***REMOVED***,
-        'password':***REMOVED***,
-        'database':***REMOVED***}
+lab = db_config.lab_server
 
 conn = msc.connect(**lab)
 conn2 = msc.connect(**lab)

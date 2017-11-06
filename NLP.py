@@ -5,6 +5,7 @@ import mysql.connector as msc
 import pandas as pd
 import operator
 from collections import Counter
+from config import db_config
 
 class NLP_Engine:
     def __init__(self):
@@ -20,11 +21,8 @@ class NLP_Engine:
         return POS
 
 def get_frequent_words(people_list, table_list):
-    config = {'host': ***REMOVED***,
-              'port': ***REMOVED***,
-              'user': ***REMOVED***,
-              'password': ***REMOVED***,
-              'database': ***REMOVED***}
+    config = db_config.lab_server
+
     conn = msc.connect(**config)
     qry = conn.cursor(buffered=True)
 
@@ -56,11 +54,8 @@ def get_frequent_words(people_list, table_list):
 
 def extract_frequent_words(mysql_query, is_repost=None):
     # connect MySQL
-    config = {'host':***REMOVED***,
-              'port':***REMOVED***,
-              'user': ***REMOVED***,
-              'password': ***REMOVED***,
-              'database': ***REMOVED***}
+    config = db_config.lab_server
+
     conn = msc.connect(**config)
     qry = conn.cursor(buffered=True)
 

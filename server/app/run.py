@@ -4,7 +4,6 @@ import sys
 sys.path.insert(0, '../../')
 
 from flask import Flask, render_template, request, jsonify
-from sqlalchemy import create_engine
 import json
 import random
 import pytagcloud
@@ -12,7 +11,6 @@ from NLP import *
 from word2vec.word2vec_module import *
 
 app = Flask(__name__)
-***REMOVED***
 
 # 정치인 리스트 및 딕셔너리
 politician_dic={

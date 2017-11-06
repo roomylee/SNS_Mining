@@ -5,23 +5,22 @@ import mysql.connector.errors
 import pandas as pd
 from datetime import datetime, timedelta
 import time
+from config import twitter_config, db_config
+
 
 # Twitter Developer Account Info.
-API_KEY = ***REMOVED***
-API_SECRET = ***REMOVED***
-ACCESS_KEY = ***REMOVED***
-ACCESS_SECRET = ***REMOVED***
+API_KEY = twitter_config.twitter['API_KEY']
+API_SECRET = twitter_config.twitter['API_SECRET']
+ACCESS_KEY = twitter_config.twitter['ACCESS_KEY']
+ACCESS_SECRET = twitter_config.twitter['ACCESS_SECRET']
 
 oAuth = tweepy.OAuthHandler(API_KEY, API_SECRET)
 oAuth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth_handler=oAuth)
 
 # Database Account Info.
-config = {'host':***REMOVED***,
-          'port':***REMOVED***,
-          'user':***REMOVED***,
-          'password':***REMOVED***,
-          'database':***REMOVED***}
+config = db_config.lab_server
+
 conn = msc.connect(**config)
 qry = conn.cursor(buffered=True)
 

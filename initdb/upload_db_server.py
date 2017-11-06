@@ -1,14 +1,9 @@
 import mysql.connector as msc
+from config import db_config
 
-lab={'host':***REMOVED***,
-        'port':***REMOVED***,
-        'user':***REMOVED***,
-        'password':***REMOVED***}
+lab = db_config.lab_server
 
-local={'host':'localhost',
-       'user':***REMOVED***,
-       'password':***REMOVED***,
-       'database':***REMOVED***}
+local = db_config.local
 
 
 conn = msc.connect(**local)
